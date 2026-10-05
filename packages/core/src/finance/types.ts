@@ -18,10 +18,12 @@ export interface Transaction {
   /** Sempre positivo; o sinal é derivado de `kind`. */
   amountCents: Cents;
   occurredOn: DateString;
-  accountId?: string;
+  accountId?: string | null;
   /** Apenas para `transfer`. */
   toAccountId?: string | null;
   categoryId?: string | null;
+  /** Posição de investimento; obrigatória em aporte, resgate, lucro e perda. */
+  holdingId?: string | null;
 }
 
 /** Intervalo inclusivo. */

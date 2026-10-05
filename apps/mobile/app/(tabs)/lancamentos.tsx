@@ -1,15 +1,18 @@
 import { Ionicons } from '@expo/vector-icons';
 import {
+  INVESTMENT_KIND_LABELS,
   displaySign,
   formatBRL,
   formatDayLabel,
   formatMonthLabel,
   groupByDay,
+  isInvestmentKind,
   matchesFilter,
   monthPeriod,
   shiftMonth,
   summarize,
   toDateString,
+  type InvestmentKind,
   type TransactionFilter,
 } from '@lumioup/core';
 import { useRouter } from 'expo-router';
@@ -26,6 +29,7 @@ import {
   Text,
 } from '../../src/components/ui';
 import { useAccounts, useCategories } from '../../src/features/catalog/hooks';
+import { useHoldings } from '../../src/features/investments/hooks';
 import { useTransactions } from '../../src/features/transactions/hooks';
 import { minTouch, spacing, useTheme } from '../../src/theme';
 
@@ -34,6 +38,7 @@ const FILTERS = [
   { value: 'expense', label: 'Gastos' },
   { value: 'income', label: 'Receitas' },
   { value: 'transfer', label: 'Transf.' },
+  { value: 'investing', label: 'Invest.' },
 ] as const;
 
 const capitalize = (text: string) => text.charAt(0).toUpperCase() + text.slice(1);
@@ -83,6 +88,7 @@ export default function LancamentosScreen() {
   const { data, isLoading, isError, refetch } = useTransactions(period);
   const { data: accounts } = useAccounts();
   const { data: categories } = useCategories();
+  const { data: holdings } = useHoldings();
 
   const accountName = useMemo(
     () => new Map((accounts ?? []).map((a) => [a.id, a.name])),
@@ -91,6 +97,11 @@ export default function LancamentosScreen() {
   const categoryById = useMemo(
     () => new Map((categories ?? []).map((c) => [c.id, c])),
     [categories],
+  );
+
+  const holdingNameById = useMemo(
+    () => new Map((holdings ?? []).map((h) => [h.id, h.name])),
+    [holdings],
   );
 
   const all = data ?? [];
@@ -134,6 +145,7 @@ export default function LancamentosScreen() {
 
       <SegmentedControl
         label="Filtrar lançamentos"
+        scrollable
         options={FILTERS}
         value={filter}
         onChange={setFilter}
@@ -165,17 +177,33 @@ export default function LancamentosScreen() {
             const category = t.categoryId ? categoryById.get(t.categoryId) : undefined;
             const sign = displaySign(t.kind);
             const isTransfer = t.kind === 'transfer';
+            const investing = isInvestmentKind(t.kind);
+            const movesCash = t.kind !== 'profit' && t.kind !== 'loss';
+            const holdingName = t.holdingId ? holdingNameById.get(t.holdingId) : undefined;
+            const account = t.accountId ? accountName.get(t.accountId) : undefined;
             const amount = formatBRL(t.amountCents);
+            const title = investing
+              ? t.description || holdingName || 'Investimento'
+              : t.description || category?.name || 'Transferência';
             return (
               <MenuRow
                 key={t.id}
-                title={t.description || category?.name || 'Transferência'}
+                title={title}
                 subtitle={
                   isTransfer
-                    ? `${accountName.get(t.accountId) ?? ''} → ${accountName.get(t.toAccountId ?? '') ?? ''}`
-                    : [category?.name, accountName.get(t.accountId)]
-                        .filter((part) => part && part !== (t.description || category?.name))
-                        .join(' · ')
+                    ? `${account ?? ''} → ${accountName.get(t.toAccountId ?? '') ?? ''}`
+                    : investing
+                      ? [
+                          INVESTMENT_KIND_LABELS[t.kind as InvestmentKind],
+                          holdingName,
+                          account,
+                          movesCash ? null : 'não move o caixa',
+                        ]
+                          .filter((part) => part && part !== title)
+                          .join(' · ')
+                      : [category?.name, account]
+                          .filter((part) => part && part !== title)
+                          .join(' · ')
                 }
                 leading={
                   <CategoryBadge
@@ -188,7 +216,15 @@ export default function LancamentosScreen() {
                   />
                 }
                 trailing={sign === 1 ? `+ ${amount}` : sign === -1 ? `- ${amount}` : amount}
-                trailingTone={sign === 1 ? 'incomeInk' : sign === -1 ? 'expenseInk' : 'textMuted'}
+                trailingTone={
+                  !movesCash
+                    ? 'investment'
+                    : sign === 1
+                      ? 'incomeInk'
+                      : sign === -1
+                        ? 'expenseInk'
+                        : 'textMuted'
+                }
                 onPress={() => router.push({ pathname: '/lancamento-form', params: { id: t.id } })}
               />
             );

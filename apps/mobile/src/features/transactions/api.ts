@@ -6,9 +6,11 @@ export interface TransactionItem {
   kind: TransactionKind;
   amountCents: number;
   occurredOn: string;
-  accountId: string;
+  /** Nulo apenas em lucro e perda, que não movem dinheiro das contas. */
+  accountId: string | null;
   toAccountId: string | null;
   categoryId: string | null;
+  holdingId: string | null;
   description: string | null;
 }
 
@@ -16,10 +18,40 @@ export interface TransactionInput {
   kind: TransactionKind;
   amountCents: number;
   occurredOn: string;
-  accountId: string;
+  accountId?: string | null;
   toAccountId?: string | null;
   categoryId?: string | null;
+  holdingId?: string | null;
   description?: string | null;
+}
+
+const COLUMNS =
+  'id, kind, amount_cents, occurred_on, account_id, to_account_id, category_id, holding_id, description';
+
+type Row = {
+  id: string;
+  kind: string;
+  amount_cents: number;
+  occurred_on: string;
+  account_id: string | null;
+  to_account_id: string | null;
+  category_id: string | null;
+  holding_id: string | null;
+  description: string | null;
+};
+
+function toItem(row: Row): TransactionItem {
+  return {
+    id: row.id,
+    kind: row.kind as TransactionKind,
+    amountCents: row.amount_cents,
+    occurredOn: row.occurred_on,
+    accountId: row.account_id,
+    toAccountId: row.to_account_id,
+    categoryId: row.category_id,
+    holdingId: row.holding_id,
+    description: row.description,
+  };
 }
 
 /** Erro do banco com mensagem e código preservados, para tradução amigável. */
@@ -42,9 +74,7 @@ const MAX_ROWS = 2000;
 export async function fetchTransactions(period: Period): Promise<TransactionItem[]> {
   const { data, error } = await supabase
     .from('transactions')
-    .select(
-      'id, kind, amount_cents, occurred_on, account_id, to_account_id, category_id, description',
-    )
+    .select(COLUMNS)
     .is('deleted_at', null)
     .gte('occurred_on', period.from)
     .lte('occurred_on', period.to)
@@ -52,49 +82,50 @@ export async function fetchTransactions(period: Period): Promise<TransactionItem
     .order('created_at', { ascending: false })
     .limit(MAX_ROWS);
   if (error) fail(error);
-  return data.map((row) => ({
-    id: row.id,
-    kind: row.kind as TransactionKind,
-    amountCents: row.amount_cents,
-    occurredOn: row.occurred_on,
-    accountId: row.account_id,
-    toAccountId: row.to_account_id,
-    categoryId: row.category_id,
-    description: row.description,
-  }));
+  return data.map(toItem);
+}
+
+/** Todos os movimentos de investimento (de qualquer data): base do valor atual das posições. */
+export async function fetchInvestmentTransactions(): Promise<TransactionItem[]> {
+  const { data, error } = await supabase
+    .from('transactions')
+    .select(COLUMNS)
+    .is('deleted_at', null)
+    .in('kind', ['investment', 'redemption', 'profit', 'loss'])
+    .order('occurred_on', { ascending: false })
+    .order('created_at', { ascending: false })
+    .limit(MAX_ROWS * 5);
+  if (error) fail(error);
+  return data.map(toItem);
 }
 
 export async function fetchTransaction(id: string): Promise<TransactionItem | null> {
   const { data, error } = await supabase
     .from('transactions')
-    .select(
-      'id, kind, amount_cents, occurred_on, account_id, to_account_id, category_id, description',
-    )
+    .select(COLUMNS)
     .eq('id', id)
     .is('deleted_at', null)
     .maybeSingle();
   if (error) fail(error);
-  if (!data) return null;
-  return {
-    id: data.id,
-    kind: data.kind as TransactionKind,
-    amountCents: data.amount_cents,
-    occurredOn: data.occurred_on,
-    accountId: data.account_id,
-    toAccountId: data.to_account_id,
-    categoryId: data.category_id,
-    description: data.description,
-  };
+  return data ? toItem(data) : null;
 }
 
 function toRow(input: TransactionInput) {
+  const investing =
+    input.kind === 'investment' ||
+    input.kind === 'redemption' ||
+    input.kind === 'profit' ||
+    input.kind === 'loss';
   return {
     kind: input.kind,
     amount_cents: input.amountCents,
     occurred_on: input.occurredOn,
-    account_id: input.accountId,
+    // Lucro e perda não movem dinheiro das contas.
+    account_id: input.kind === 'profit' || input.kind === 'loss' ? null : (input.accountId ?? null),
     to_account_id: input.kind === 'transfer' ? (input.toAccountId ?? null) : null,
-    category_id: input.kind === 'transfer' ? null : (input.categoryId ?? null),
+    // Em movimentos de investimento a categoria vem da posição (definida pelo banco).
+    category_id: input.kind === 'transfer' || investing ? null : (input.categoryId ?? null),
+    holding_id: investing ? (input.holdingId ?? null) : null,
     description: input.description?.trim() ? input.description.trim() : null,
   };
 }
@@ -126,6 +157,10 @@ export function friendlyTransactionError(error: unknown): string {
   if (text.includes('category_archived')) return 'Essa categoria está arquivada. Escolha outra.';
   if (text.includes('account_archived')) return 'Essa conta está arquivada. Escolha outra.';
   if (text.includes('category_kind_mismatch')) return 'Essa categoria não serve para este tipo.';
+  if (text.includes('holding_archived')) return 'Essa posição está arquivada. Escolha outra.';
+  if (text.includes('holding_required') || text.includes('invalid_holding')) {
+    return 'Escolha a posição de investimento.';
+  }
   if (text.includes('invalid_date')) return 'Essa data está fora do período aceito.';
   if (text.includes('invalid_account') || text.includes('invalid_category')) {
     return 'Conta ou categoria não encontrada. Atualize a tela e tente de novo.';

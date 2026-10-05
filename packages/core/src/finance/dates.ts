@@ -1,6 +1,6 @@
 import type { CategoryKind } from '../catalog/catalog';
 import type { DateString, Period, Transaction, TransactionKind } from './types';
-import { isValidDate } from './validation';
+import { isInvestmentKind, isValidDate } from './validation';
 
 const pad = (n: number) => String(n).padStart(2, '0');
 
@@ -137,9 +137,11 @@ export function categoryKindFor(kind: TransactionKind): CategoryKind | null {
   }
 }
 
-export type TransactionFilter = 'all' | 'expense' | 'income' | 'transfer';
+export type TransactionFilter = 'all' | 'expense' | 'income' | 'transfer' | 'investing';
 
+/** `investing` reúne aporte, resgate, lucro e perda. */
 export function matchesFilter(t: Pick<Transaction, 'kind'>, filter: TransactionFilter): boolean {
   if (filter === 'all') return true;
+  if (filter === 'investing') return isInvestmentKind(t.kind);
   return t.kind === filter;
 }

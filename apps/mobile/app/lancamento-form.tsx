@@ -1,12 +1,19 @@
 import {
+  INVESTMENT_KIND_LABELS,
   categoryKindFor,
+  formatBRL,
+  isInvestmentKind,
+  summarizeHoldings,
   toDateString,
+  validateInvestmentMove,
   validateTransaction,
   type DateString,
+  type InvestmentKind,
+  type Transaction,
   type TransactionKind,
 } from '@lumioup/core';
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { View } from 'react-native';
 import {
   Button,
@@ -20,41 +27,63 @@ import {
   useToast,
 } from '../src/components/ui';
 import { useAccounts, useCategories } from '../src/features/catalog/hooks';
+import { useHoldings } from '../src/features/investments/hooks';
 import { friendlyTransactionError } from '../src/features/transactions/api';
 import { CategoryPicker } from '../src/features/transactions/CategoryPicker';
 import {
   useCreateTransaction,
+  useInvestmentTransactions,
   useSetTransactionDeleted,
   useTransaction,
   useUpdateTransaction,
 } from '../src/features/transactions/hooks';
 import { spacing } from '../src/theme';
 
-type FormKind = Extract<TransactionKind, 'expense' | 'income' | 'transfer'>;
+type Group = 'expense' | 'income' | 'transfer' | 'investing';
+type FormKind = Extract<TransactionKind, 'expense' | 'income' | 'transfer' | InvestmentKind>;
 
-const KIND_OPTIONS = [
+const GROUP_OPTIONS = [
   { value: 'expense', label: 'Gasto' },
   { value: 'income', label: 'Receita' },
-  { value: 'transfer', label: 'Transferência' },
+  { value: 'transfer', label: 'Transf.' },
+  { value: 'investing', label: 'Invest.' },
 ] as const;
 
-const FORM_KINDS: readonly string[] = KIND_OPTIONS.map((o) => o.value);
+const INVESTING_OPTIONS = (Object.keys(INVESTMENT_KIND_LABELS) as InvestmentKind[]).map(
+  (value) => ({ value, label: INVESTMENT_KIND_LABELS[value] }),
+);
+
+const FORM_KINDS: readonly string[] = [
+  'expense',
+  'income',
+  'transfer',
+  'investment',
+  'redemption',
+  'profit',
+  'loss',
+];
+
+const groupOf = (kind: FormKind): Group => (isInvestmentKind(kind) ? 'investing' : (kind as Group));
 
 export default function LancamentoFormScreen() {
   const router = useRouter();
   const toast = useToast();
-  const params = useLocalSearchParams<{ id?: string; kind?: string }>();
+  const params = useLocalSearchParams<{ id?: string; kind?: string; holdingId?: string }>();
   const editing = Boolean(params.id);
 
   const { data: accounts } = useAccounts();
   const { data: categories } = useCategories();
+  const { data: holdings } = useHoldings();
+  const { data: investmentTransactions } = useInvestmentTransactions();
   const { data: existing, isLoading: loadingExisting } = useTransaction(params.id);
 
-  const [kind, setKind] = useState<FormKind>(
-    FORM_KINDS.includes(params.kind ?? '') ? (params.kind as FormKind) : 'expense',
-  );
+  const initialKind: FormKind = FORM_KINDS.includes(params.kind ?? '')
+    ? (params.kind as FormKind)
+    : 'expense';
+  const [kind, setKind] = useState<FormKind>(initialKind);
   const [amount, setAmount] = useState(0);
   const [categoryId, setCategoryId] = useState<string | null>(null);
+  const [holdingId, setHoldingId] = useState<string | null>(params.holdingId ?? null);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [toAccountId, setToAccountId] = useState<string | null>(null);
   const [date, setDate] = useState<DateString | null>(toDateString(new Date()));
@@ -67,6 +96,10 @@ export default function LancamentoFormScreen() {
   const setDeleted = useSetTransactionDeleted();
   const busy = create.isPending || update.isPending || setDeleted.isPending;
 
+  const group = groupOf(kind);
+  const investing = group === 'investing';
+  const movesCash = kind !== 'profit' && kind !== 'loss';
+
   const activeAccounts = (accounts ?? []).filter(
     (a) => !a.isArchived || a.id === existing?.accountId || a.id === existing?.toAccountId,
   );
@@ -74,6 +107,16 @@ export default function LancamentoFormScreen() {
   const visibleCategories = (categories ?? []).filter(
     (c) => c.kind === wantedCategoryKind && (!c.isArchived || c.id === existing?.categoryId),
   );
+  const activeHoldings = (holdings ?? []).filter(
+    (h) => !h.isArchived || h.id === existing?.holdingId,
+  );
+
+  // Valor atual da posição escolhida, sem contar o próprio lançamento em edição.
+  const holdingValue = useMemo(() => {
+    if (!holdingId) return 0;
+    const others = (investmentTransactions ?? []).filter((t) => t.id !== params.id);
+    return summarizeHoldings(others as Transaction[]).get(holdingId)?.currentValue ?? 0;
+  }, [holdingId, investmentTransactions, params.id]);
 
   // Edição: preenche o formulário uma única vez quando o lançamento carregar.
   useEffect(() => {
@@ -81,6 +124,7 @@ export default function LancamentoFormScreen() {
       if (FORM_KINDS.includes(existing.kind)) setKind(existing.kind as FormKind);
       setAmount(existing.amountCents);
       setCategoryId(existing.categoryId);
+      setHoldingId(existing.holdingId);
       setAccountId(existing.accountId);
       setToAccountId(existing.toAccountId);
       setDate(existing.occurredOn);
@@ -97,8 +141,8 @@ export default function LancamentoFormScreen() {
     }
   }, [editing, accountId, accounts]);
 
-  const changeKind = (next: FormKind) => {
-    setKind(next);
+  const changeGroup = (next: Group) => {
+    setKind(next === 'investing' ? 'investment' : next);
     setCategoryId(null);
     setToAccountId(null);
     setError(null);
@@ -107,26 +151,33 @@ export default function LancamentoFormScreen() {
   const save = async () => {
     setError(null);
     if (date === null) return setError('Informe uma data válida.');
-    if (!accountId) return setError('Escolha a conta.');
+    if (amount <= 0) return setError('Informe um valor maior que zero.');
+    if (movesCash && !accountId) return setError('Escolha a conta.');
+    if (!investing && kind !== 'transfer' && !categoryId) return setError('Escolha uma categoria.');
+    if (investing && !holdingId) return setError('Escolha a posição de investimento.');
     const problems = validateTransaction({
       kind,
       amountCents: amount,
       occurredOn: date,
-      accountId,
-      ...(kind === 'transfer' ? { toAccountId: toAccountId ?? undefined } : {}),
-      ...(kind !== 'transfer' && categoryId ? { categoryId } : {}),
+      accountId: movesCash ? accountId : null,
+      toAccountId: kind === 'transfer' ? toAccountId : null,
+      categoryId: kind === 'expense' || kind === 'income' ? categoryId : null,
+      holdingId: investing ? holdingId : null,
     });
-    if (amount <= 0) return setError('Informe um valor maior que zero.');
-    if (kind !== 'transfer' && !categoryId) return setError('Escolha uma categoria.');
     if (problems.length > 0) return setError(problems[0] ?? 'Confira os dados.');
+    if (investing) {
+      const moveProblem = validateInvestmentMove(kind, amount, holdingValue);
+      if (moveProblem) return setError(moveProblem);
+    }
 
     const input = {
       kind,
       amountCents: amount,
       occurredOn: date,
-      accountId,
+      accountId: movesCash ? accountId : null,
       toAccountId: kind === 'transfer' ? toAccountId : null,
-      categoryId: kind === 'transfer' ? null : categoryId,
+      categoryId: kind === 'expense' || kind === 'income' ? categoryId : null,
+      holdingId: investing ? holdingId : null,
       description,
     };
     try {
@@ -172,6 +223,7 @@ export default function LancamentoFormScreen() {
 
   const accountOptions = activeAccounts.map((a) => ({ value: a.id, label: a.name }));
   const canTransfer = activeAccounts.length >= 2;
+  const holdingOptions = activeHoldings.map((h) => ({ value: h.id, label: h.name }));
 
   return (
     <Screen withHeader>
@@ -180,11 +232,22 @@ export default function LancamentoFormScreen() {
       {editing ? null : (
         <SegmentedControl
           label="Tipo de lançamento"
-          options={KIND_OPTIONS}
-          value={kind}
-          onChange={changeKind}
+          options={GROUP_OPTIONS}
+          value={group}
+          onChange={changeGroup}
         />
       )}
+      {investing && !editing ? (
+        <SegmentedControl
+          label="Tipo de movimento de investimento"
+          options={INVESTING_OPTIONS}
+          value={kind as InvestmentKind}
+          onChange={(next) => {
+            setKind(next);
+            setError(null);
+          }}
+        />
+      ) : null}
 
       <Card>
         <MoneyInput label="Quanto foi?" valueCents={amount} onChangeCents={setAmount} />
@@ -225,6 +288,35 @@ export default function LancamentoFormScreen() {
             />
           </Card>
         )
+      ) : investing ? (
+        <View style={{ gap: spacing.sm }}>
+          <Text variant="caption">Posição</Text>
+          {holdingOptions.length > 0 ? (
+            <>
+              <SegmentedControl
+                label="Posição de investimento"
+                options={holdingOptions}
+                value={holdingId ?? ''}
+                onChange={(id) => {
+                  setHoldingId(id);
+                  setError(null);
+                }}
+              />
+              {holdingId ? (
+                <Text variant="caption">Valor atual da posição: {formatBRL(holdingValue)}</Text>
+              ) : null}
+            </>
+          ) : (
+            <Card>
+              <Text>Crie uma posição (por exemplo, Tesouro Selic) para registrar movimentos.</Text>
+              <Button
+                label="Criar posição"
+                variant="secondary"
+                onPress={() => router.push('/investimentos/posicao-form')}
+              />
+            </Card>
+          )}
+        </View>
       ) : (
         <View style={{ gap: spacing.sm }}>
           <Text variant="caption">Categoria</Text>
@@ -240,7 +332,7 @@ export default function LancamentoFormScreen() {
         </View>
       )}
 
-      {kind !== 'transfer' && accountOptions.length > 1 ? (
+      {kind !== 'transfer' && movesCash && accountOptions.length > 1 ? (
         <View style={{ gap: spacing.xs }}>
           <Text variant="caption">Conta</Text>
           <SegmentedControl
@@ -250,6 +342,12 @@ export default function LancamentoFormScreen() {
             onChange={setAccountId}
           />
         </View>
+      ) : null}
+
+      {investing && !movesCash ? (
+        <Text variant="caption">
+          Lucro e perda mudam o valor da posição, mas não movem dinheiro das suas contas.
+        </Text>
       ) : null}
 
       <DateField key={loaded ? 'loaded' : 'initial'} value={date} onChange={setDate} />

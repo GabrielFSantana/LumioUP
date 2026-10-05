@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
 import {
   createTransaction,
+  fetchInvestmentTransactions,
   fetchTransaction,
   fetchTransactions,
   setTransactionDeleted,
@@ -17,6 +18,9 @@ export const useTransactions = (period: Period) =>
     queryKey: [...KEY, period.from, period.to],
     queryFn: () => fetchTransactions(period),
   });
+
+export const useInvestmentTransactions = () =>
+  useQuery({ queryKey: [...KEY, 'investments'], queryFn: fetchInvestmentTransactions });
 
 export const useTransaction = (id: string | undefined) =>
   useQuery({

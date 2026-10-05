@@ -1,8 +1,18 @@
 import { formatBRL, monthPeriod, summarize, toDateString } from '@lumioup/core';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { Card, Chip, Mascot, ProgressBar, Screen, Text } from '../../src/components/ui';
+import {
+  Card,
+  CategoryBadge,
+  Chip,
+  Mascot,
+  MenuRow,
+  ProgressBar,
+  Screen,
+  Text,
+} from '../../src/components/ui';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
+import { useInvestmentSummary } from '../../src/features/investments/hooks';
 import { useTransactions } from '../../src/features/transactions/hooks';
 import { useAuth } from '../../src/features/auth/AuthProvider';
 import { radius, spacing, useTheme } from '../../src/theme';
@@ -15,6 +25,7 @@ export default function InicioScreen() {
   const period = monthPeriod(toDateString(new Date()));
   const { data: transactions } = useTransactions(period);
   const summary = summarize(transactions ?? []);
+  const { totals } = useInvestmentSummary();
 
   return (
     <Screen>
@@ -76,6 +87,20 @@ export default function InicioScreen() {
         <Text variant="caption">Registre seu primeiro lançamento</Text>
         <ProgressBar percent={0} label="Progresso da missão do dia" />
       </Card>
+
+      <MenuRow
+        title="Investimentos"
+        subtitle={
+          totals.contributed > 0
+            ? `Aportado ${formatBRL(totals.contributed)}${
+                totals.returnPercent !== null ? ` · ${totals.returnPercent}%` : ''
+              }`
+            : 'Crie uma posição e registre seus aportes'
+        }
+        trailing={formatBRL(totals.currentValue)}
+        leading={<CategoryBadge icon="trending-up-outline" color="blue" />}
+        onPress={() => router.push('/investimentos')}
+      />
     </Screen>
   );
 }

@@ -143,4 +143,11 @@ describe('matchesFilter', () => {
     expect(matchesFilter({ kind: 'income' }, 'expense')).toBe(false);
     expect(matchesFilter({ kind: 'transfer' }, 'transfer')).toBe(true);
   });
+  it('investing reúne aporte, resgate, lucro e perda', () => {
+    for (const kind of ['investment', 'redemption', 'profit', 'loss'] as const) {
+      expect(matchesFilter({ kind }, 'investing')).toBe(true);
+    }
+    expect(matchesFilter({ kind: 'expense' }, 'investing')).toBe(false);
+    expect(matchesFilter({ kind: 'transfer' }, 'investing')).toBe(false);
+  });
 });

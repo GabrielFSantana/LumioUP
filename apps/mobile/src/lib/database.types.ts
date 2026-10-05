@@ -62,6 +62,31 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"holdings": {
+                  Row: {
+                    "category_id": string,"created_at": string,"id": string,"is_archived": boolean,"name": string,"profile_id": string,"updated_at": string
+                  }
+                  Insert: {
+                    "category_id": string,"created_at"?: string,"id"?: string,"is_archived"?: boolean,"name": string,"profile_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "category_id"?: string,"created_at"?: string,"id"?: string,"is_archived"?: boolean,"name"?: string,"profile_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "holdings_category_id_fkey"
+      columns: ["category_id"]
+isOneToOne: false
+      referencedRelation: "categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "holdings_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"profiles": {
                   Row: {
                     "avatar_url": string | null,"bio": string | null,"created_at": string,"currency": string,"display_name": string,"experience_level": string,"id": string,"onboarding_done": boolean,"timezone": string,"updated_at": string
@@ -77,13 +102,13 @@ isOneToOne: false
                   ]
                 },"transactions": {
                   Row: {
-                    "account_id": string,"amount_cents": number,"category_id": string | null,"created_at": string,"deleted_at": string | null,"description": string | null,"id": string,"kind": string,"notes": string | null,"occurred_on": string,"payment_method": string | null,"profile_id": string,"to_account_id": string | null,"updated_at": string
+                    "account_id": string | null,"amount_cents": number,"category_id": string | null,"created_at": string,"deleted_at": string | null,"description": string | null,"holding_id": string | null,"id": string,"kind": string,"notes": string | null,"occurred_on": string,"payment_method": string | null,"profile_id": string,"to_account_id": string | null,"updated_at": string
                   }
                   Insert: {
-                    "account_id": string,"amount_cents": number,"category_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"description"?: string | null,"id"?: string,"kind": string,"notes"?: string | null,"occurred_on": string,"payment_method"?: string | null,"profile_id": string,"to_account_id"?: string | null,"updated_at"?: string
+                    "account_id"?: string | null,"amount_cents": number,"category_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"description"?: string | null,"holding_id"?: string | null,"id"?: string,"kind": string,"notes"?: string | null,"occurred_on": string,"payment_method"?: string | null,"profile_id": string,"to_account_id"?: string | null,"updated_at"?: string
                   }
                   Update: {
-                    "account_id"?: string,"amount_cents"?: number,"category_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"description"?: string | null,"id"?: string,"kind"?: string,"notes"?: string | null,"occurred_on"?: string,"payment_method"?: string | null,"profile_id"?: string,"to_account_id"?: string | null,"updated_at"?: string
+                    "account_id"?: string | null,"amount_cents"?: number,"category_id"?: string | null,"created_at"?: string,"deleted_at"?: string | null,"description"?: string | null,"holding_id"?: string | null,"id"?: string,"kind"?: string,"notes"?: string | null,"occurred_on"?: string,"payment_method"?: string | null,"profile_id"?: string,"to_account_id"?: string | null,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -97,6 +122,12 @@ isOneToOne: false
       columns: ["category_id"]
 isOneToOne: false
       referencedRelation: "categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "transactions_holding_id_fkey"
+      columns: ["holding_id"]
+isOneToOne: false
+      referencedRelation: "holdings"
       referencedColumns: ["id"]
     },{
       foreignKeyName: "transactions_profile_id_fkey"

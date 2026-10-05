@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { minTouch, radius, spacing, useTheme } from '../../theme';
 import { Text } from './Text';
 
@@ -12,6 +12,8 @@ interface SegmentedControlProps<T extends string> {
   value: T;
   onChange: (value: T) => void;
   label: string;
+  /** Quando verdadeiro, as opções rolam na horizontal em vez de quebrar de linha (filtros). */
+  scrollable?: boolean;
 }
 
 /** Escolha única em formato de "pílulas" que quebram de linha quando faltar espaço. */
@@ -20,40 +22,58 @@ export function SegmentedControl<T extends string>({
   value,
   onChange,
   label,
+  scrollable = false,
 }: SegmentedControlProps<T>) {
   const { colors } = useTheme();
+  const items = options.map((option) => {
+    const selected = option.value === value;
+    return (
+      <Pressable
+        key={option.value}
+        accessibilityRole="radio"
+        accessibilityState={{ selected }}
+        accessibilityLabel={option.label}
+        onPress={() => onChange(option.value)}
+        style={[
+          styles.item,
+          !scrollable && styles.grow,
+          {
+            backgroundColor: selected ? colors.primarySoft : colors.surface,
+            borderColor: selected ? colors.primaryEdge : colors.border,
+            borderBottomWidth: selected ? 4 : 2,
+          },
+        ]}
+      >
+        <Text variant="bodyBold" style={{ fontSize: 14 }}>
+          {option.label}
+        </Text>
+      </Pressable>
+    );
+  });
+
+  if (scrollable) {
+    return (
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        accessibilityRole="radiogroup"
+        accessibilityLabel={label}
+        contentContainerStyle={styles.scrollRow}
+      >
+        {items}
+      </ScrollView>
+    );
+  }
   return (
     <View accessibilityRole="radiogroup" accessibilityLabel={label} style={styles.row}>
-      {options.map((option) => {
-        const selected = option.value === value;
-        return (
-          <Pressable
-            key={option.value}
-            accessibilityRole="radio"
-            accessibilityState={{ selected }}
-            accessibilityLabel={option.label}
-            onPress={() => onChange(option.value)}
-            style={[
-              styles.item,
-              {
-                backgroundColor: selected ? colors.primarySoft : colors.surface,
-                borderColor: selected ? colors.primaryEdge : colors.border,
-                borderBottomWidth: selected ? 4 : 2,
-              },
-            ]}
-          >
-            <Text variant="bodyBold" style={{ fontSize: 14 }}>
-              {option.label}
-            </Text>
-          </Pressable>
-        );
-      })}
+      {items}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
+  scrollRow: { flexDirection: 'row', gap: spacing.sm, paddingRight: spacing.md },
   item: {
     minHeight: minTouch - 4,
     paddingHorizontal: spacing.md,
@@ -61,6 +81,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    flexGrow: 1,
   },
+  grow: { flexGrow: 1 },
 });

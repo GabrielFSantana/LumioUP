@@ -4,3 +4,4 @@ export * from './summary';
 export * from './balances';
 export * from './breakdown';
 export * from './dates';
+export * from './holdings';

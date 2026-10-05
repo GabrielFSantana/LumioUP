@@ -1,4 +1,11 @@
-import type { DateString, Transaction } from './types';
+import type { DateString, Transaction, TransactionKind } from './types';
+
+export const INVESTMENT_KINDS = ['investment', 'redemption', 'profit', 'loss'] as const;
+
+/** Aporte, resgate, lucro ou perda: movimentos ligados a uma posição de investimento. */
+export function isInvestmentKind(kind: TransactionKind): boolean {
+  return (INVESTMENT_KINDS as readonly string[]).includes(kind);
+}
 
 export function isValidDate(value: DateString): boolean {
   const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
@@ -15,6 +22,9 @@ export function validateTransaction(t: Transaction): string[] {
     errors.push('O valor deve ser um inteiro positivo em centavos.');
   }
   if (!isValidDate(t.occurredOn)) errors.push('Data inválida.');
+  const investing = isInvestmentKind(t.kind);
+  if (investing && !t.holdingId) errors.push('Escolha a posição de investimento.');
+  if (!investing && t.holdingId) errors.push('Posição só vale em movimentos de investimento.');
   if (t.kind === 'transfer') {
     if (!t.accountId || !t.toAccountId) {
       errors.push('Transferência exige conta de origem e destino.');
