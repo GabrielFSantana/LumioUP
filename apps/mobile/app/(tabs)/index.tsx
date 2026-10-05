@@ -27,6 +27,7 @@ import { CategoryBars } from '../../src/features/dashboard/CategoryBars';
 import { MetricTile } from '../../src/features/dashboard/MetricTile';
 import { NetWorthChart } from '../../src/features/dashboard/NetWorthChart';
 import { PeriodSelector, type PeriodState } from '../../src/features/dashboard/PeriodSelector';
+import { GoalsSummary } from '../../src/features/goals/GoalsSummary';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
 import { useInvestmentSummary } from '../../src/features/investments/hooks';
 import { useAllTransactions } from '../../src/features/transactions/hooks';
@@ -188,6 +189,8 @@ export default function InicioScreen() {
         ) : null}
         <NetWorthChart points={dashboard.netWorthSeries} />
       </Card>
+
+      <GoalsSummary />
 
       <Card>
         <View style={styles.rowBetween}>

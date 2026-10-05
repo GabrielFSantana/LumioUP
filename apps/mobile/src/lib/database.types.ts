@@ -62,6 +62,56 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"goal_contributions": {
+                  Row: {
+                    "amount_cents": number,"created_at": string,"deleted_at": string | null,"goal_id": string,"id": string,"note": string | null,"occurred_on": string,"profile_id": string,"updated_at": string
+                  }
+                  Insert: {
+                    "amount_cents": number,"created_at"?: string,"deleted_at"?: string | null,"goal_id": string,"id"?: string,"note"?: string | null,"occurred_on": string,"profile_id": string,"updated_at"?: string
+                  }
+                  Update: {
+                    "amount_cents"?: number,"created_at"?: string,"deleted_at"?: string | null,"goal_id"?: string,"id"?: string,"note"?: string | null,"occurred_on"?: string,"profile_id"?: string,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "goal_contributions_goal_id_fkey"
+      columns: ["goal_id"]
+isOneToOne: false
+      referencedRelation: "goals"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "goal_contributions_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"goals": {
+                  Row: {
+                    "completed_at": string | null,"created_at": string,"deadline": string | null,"expense_category_id": string | null,"id": string,"kind": string,"name": string,"profile_id": string,"status": string,"target_cents": number,"updated_at": string
+                  }
+                  Insert: {
+                    "completed_at"?: string | null,"created_at"?: string,"deadline"?: string | null,"expense_category_id"?: string | null,"id"?: string,"kind": string,"name": string,"profile_id": string,"status"?: string,"target_cents": number,"updated_at"?: string
+                  }
+                  Update: {
+                    "completed_at"?: string | null,"created_at"?: string,"deadline"?: string | null,"expense_category_id"?: string | null,"id"?: string,"kind"?: string,"name"?: string,"profile_id"?: string,"status"?: string,"target_cents"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "goals_expense_category_id_fkey"
+      columns: ["expense_category_id"]
+isOneToOne: false
+      referencedRelation: "categories"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "goals_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"holdings": {
                   Row: {
                     "category_id": string,"created_at": string,"id": string,"is_archived": boolean,"name": string,"profile_id": string,"updated_at": string

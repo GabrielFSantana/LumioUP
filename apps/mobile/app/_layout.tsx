@@ -39,6 +39,7 @@ function RootNavigator() {
         <Stack.Screen name="perfil" />
         <Stack.Screen name="investimentos" />
         <Stack.Screen name="relatorios" />
+        <Stack.Screen name="meta" />
         <Stack.Screen
           name="lancamento-form"
           options={{

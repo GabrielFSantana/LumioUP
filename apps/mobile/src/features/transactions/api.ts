@@ -1,4 +1,5 @@
 import type { Period, TransactionKind } from '@lumioup/core';
+import { fetchAllPages } from '../../lib/paging';
 import { supabase } from '../../lib/supabase';
 
 export interface TransactionItem {
@@ -68,73 +69,55 @@ function fail(error: { message: string; code?: string }): never {
   throw new TransactionError(error.message, error.code);
 }
 
-/**
- * O servidor devolve no máximo 1.000 linhas por consulta (limite do PostgREST) e cortaria o
- * restante sem avisar. Por isso toda busca de lista é feita em páginas até acabar.
- */
-const PAGE_SIZE = 1000;
-/** Teto de segurança: 50.000 lançamentos. Acima disso é hora de agregar no banco. */
-const MAX_PAGES = 50;
-
-type PageResult = PromiseLike<{
-  data: Row[] | null;
-  error: { message: string; code?: string } | null;
-}>;
-
-async function fetchAllPages(page: (from: number, to: number) => PageResult): Promise<Row[]> {
-  const rows: Row[] = [];
-  for (let i = 0; i < MAX_PAGES; i++) {
-    const { data, error } = await page(i * PAGE_SIZE, (i + 1) * PAGE_SIZE - 1);
-    if (error) fail(error);
-    rows.push(...(data ?? []));
-    if ((data?.length ?? 0) < PAGE_SIZE) break;
-  }
-  return rows;
-}
-
 export async function fetchTransactions(period: Period): Promise<TransactionItem[]> {
-  const rows = await fetchAllPages((from, to) =>
-    supabase
-      .from('transactions')
-      .select(COLUMNS)
-      .is('deleted_at', null)
-      .gte('occurred_on', period.from)
-      .lte('occurred_on', period.to)
-      .order('occurred_on', { ascending: false })
-      .order('created_at', { ascending: false })
-      .order('id')
-      .range(from, to),
+  const rows = await fetchAllPages<Row>(
+    (from, to) =>
+      supabase
+        .from('transactions')
+        .select(COLUMNS)
+        .is('deleted_at', null)
+        .gte('occurred_on', period.from)
+        .lte('occurred_on', period.to)
+        .order('occurred_on', { ascending: false })
+        .order('created_at', { ascending: false })
+        .order('id')
+        .range(from, to),
+    fail,
   );
   return rows.map(toItem);
 }
 
 /** Todos os lançamentos do usuário (base do patrimônio e do painel). */
 export async function fetchAllTransactions(): Promise<TransactionItem[]> {
-  const rows = await fetchAllPages((from, to) =>
-    supabase
-      .from('transactions')
-      .select(COLUMNS)
-      .is('deleted_at', null)
-      .order('occurred_on', { ascending: false })
-      .order('created_at', { ascending: false })
-      .order('id')
-      .range(from, to),
+  const rows = await fetchAllPages<Row>(
+    (from, to) =>
+      supabase
+        .from('transactions')
+        .select(COLUMNS)
+        .is('deleted_at', null)
+        .order('occurred_on', { ascending: false })
+        .order('created_at', { ascending: false })
+        .order('id')
+        .range(from, to),
+    fail,
   );
   return rows.map(toItem);
 }
 
 /** Todos os movimentos de investimento (de qualquer data): base do valor atual das posições. */
 export async function fetchInvestmentTransactions(): Promise<TransactionItem[]> {
-  const rows = await fetchAllPages((from, to) =>
-    supabase
-      .from('transactions')
-      .select(COLUMNS)
-      .is('deleted_at', null)
-      .in('kind', ['investment', 'redemption', 'profit', 'loss'])
-      .order('occurred_on', { ascending: false })
-      .order('created_at', { ascending: false })
-      .order('id')
-      .range(from, to),
+  const rows = await fetchAllPages<Row>(
+    (from, to) =>
+      supabase
+        .from('transactions')
+        .select(COLUMNS)
+        .is('deleted_at', null)
+        .in('kind', ['investment', 'redemption', 'profit', 'loss'])
+        .order('occurred_on', { ascending: false })
+        .order('created_at', { ascending: false })
+        .order('id')
+        .range(from, to),
+    fail,
   );
   return rows.map(toItem);
 }
