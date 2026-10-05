@@ -9,6 +9,7 @@
     "@expo/vector-icons": "^15.0.2",
     "@lumioup/core": "*",
     "@supabase/supabase-js": "^2.117.2",
+    "@tanstack/react-query": "^5.104.1",
     "expo": "~57.0.26",
     "expo-constants": "~57.0.20",
     "expo-font": "~57.0.4",

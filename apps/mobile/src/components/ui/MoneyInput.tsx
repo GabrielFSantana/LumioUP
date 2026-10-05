@@ -35,5 +35,11 @@ export function MoneyInput({ valueCents, onChangeCents, label }: MoneyInputProps
 
 const styles = StyleSheet.create({
   wrapper: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.sm },
-  input: { fontFamily: fonts.display, fontSize: 44, textAlign: 'center', minWidth: 220 },
+  input: {
+    fontFamily: fonts.display,
+    fontSize: 44,
+    textAlign: 'center',
+    alignSelf: 'stretch',
+    outlineWidth: 0,
+  },
 });

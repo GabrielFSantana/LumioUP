@@ -1,13 +1,15 @@
 import { formatBRL, summarize } from '@lumioup/core';
-import { StyleSheet, View } from 'react-native';
-import { Button, Card, Chip, Mascot, ProgressBar, Screen, Text } from '../../src/components/ui';
+import { useRouter } from 'expo-router';
+import { Pressable, StyleSheet, View } from 'react-native';
+import { Card, Chip, Mascot, ProgressBar, Screen, Text } from '../../src/components/ui';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
 import { useAuth } from '../../src/features/auth/AuthProvider';
 import { radius, spacing, useTheme } from '../../src/theme';
 
 export default function InicioScreen() {
   const { colors } = useTheme();
-  const { session, signOut } = useAuth();
+  const router = useRouter();
+  const { session } = useAuth();
   const name = String(session?.user.user_metadata?.display_name ?? '').trim();
   // Ainda não há lançamentos: os totais vêm do core com lista vazia (sem dados inventados).
   const summary = summarize([]);
@@ -15,7 +17,13 @@ export default function InicioScreen() {
   return (
     <Screen>
       <View style={styles.header}>
-        <Mascot size={56} />
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Abrir perfil"
+          onPress={() => router.push('/perfil')}
+        >
+          <Mascot size={56} />
+        </Pressable>
         <View style={styles.headerText}>
           <Text variant="title">{name ? `Oi, ${name}!` : 'Oi!'}</Text>
           <Text variant="caption">Sua luz de hoje está acesa?</Text>
@@ -65,12 +73,6 @@ export default function InicioScreen() {
         </View>
         <Text variant="caption">Registre seu primeiro lançamento</Text>
         <ProgressBar percent={0} label="Progresso da missão do dia" />
-      </Card>
-
-      {/* Provisório: a tela de Perfil (etapa de perfil/configurações) assumirá o "Sair". */}
-      <Card>
-        <Text variant="caption">Conectado como {session?.user.email}</Text>
-        <Button label="Sair" variant="secondary" onPress={signOut} />
       </Card>
     </Screen>
   );

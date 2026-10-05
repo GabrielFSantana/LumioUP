@@ -1,11 +1,13 @@
 import { Fredoka_600SemiBold, Fredoka_700Bold } from '@expo-google-fonts/fredoka';
 import { Nunito_600SemiBold, Nunito_700Bold, Nunito_800ExtraBold } from '@expo-google-fonts/nunito';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 import { Text } from '../src/components/ui';
 import { AuthProvider, useAuth } from '../src/features/auth/AuthProvider';
+import { queryClient } from '../src/lib/queryClient';
 import { isSupabaseConfigured } from '../src/lib/supabase';
 import { useTheme } from '../src/theme';
 
@@ -33,6 +35,7 @@ function RootNavigator() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Protected guard={Boolean(session)}>
         <Stack.Screen name="(tabs)" />
+        <Stack.Screen name="perfil" />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" />
@@ -73,9 +76,11 @@ export default function RootLayout() {
     );
   }
   return (
-    <AuthProvider>
-      <StatusBar style="auto" />
-      <RootNavigator />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <StatusBar style="auto" />
+        <RootNavigator />
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

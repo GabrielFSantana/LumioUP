@@ -53,5 +53,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.md,
     fontSize: 17,
     fontFamily: fonts.bodyBold,
+    outlineWidth: 0,
   },
 });

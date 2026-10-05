@@ -1,10 +1,13 @@
 export { Button } from './Button';
 export { Card } from './Card';
+export { CATEGORY_ICONS, CategoryBadge } from './CategoryBadge';
 export { Chip } from './Chip';
 export { EmptyState } from './EmptyState';
 export { Mascot } from './Mascot';
+export { MenuRow } from './MenuRow';
 export { MoneyInput } from './MoneyInput';
 export { ProgressBar } from './ProgressBar';
 export { Screen } from './Screen';
+export { SegmentedControl } from './SegmentedControl';
 export { Text } from './Text';
 export { TextField } from './TextField';

@@ -5,13 +5,15 @@ import { spacing, useTheme } from '../../theme';
 import { Text } from './Text';
 
 interface ScreenProps {
-  /** Omita quando a tela monta o próprio cabeçalho (ex.: Início). */
+  /** Omita quando a tela monta o próprio cabeçalho (ex.: Início) ou usa o do navegador. */
   title?: string;
+  /** Verdadeiro quando o navegador já mostra um cabeçalho (ele cuida da área segura do topo). */
+  withHeader?: boolean;
   children: ReactNode;
 }
 
 /** Contêiner padrão das telas: fundo do tema, área segura, rolagem e título. */
-export function Screen({ title, children }: ScreenProps) {
+export function Screen({ title, withHeader = false, children }: ScreenProps) {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
   return (
@@ -19,7 +21,10 @@ export function Screen({ title, children }: ScreenProps) {
       style={{ backgroundColor: colors.background }}
       contentContainerStyle={[
         styles.content,
-        { paddingTop: insets.top + spacing.md, paddingBottom: insets.bottom + spacing.lg },
+        {
+          paddingTop: (withHeader ? 0 : insets.top) + spacing.md,
+          paddingBottom: insets.bottom + spacing.lg,
+        },
       ]}
       keyboardShouldPersistTaps="handled"
     >

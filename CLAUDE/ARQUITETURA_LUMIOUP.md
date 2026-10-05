@@ -118,7 +118,7 @@ Convenções: `id uuid pk`, `created_at/updated_at timestamptz`, valores em cent
 
 ### Financeiro
 - **accounts**: `profile_id`, `name`, `kind` (carteira, conta, investimento, outro), `opening_balance_cents`, `archived`
-- **categories**: `profile_id` (null = padrão do sistema), `kind` (expense/income/investment), `name`, `icon`, `color`, `parent_id?`, `is_archived`
+- **categories**: `profile_id` (decisão da Etapa 4: as categorias padrão são **copiadas para cada usuário** no cadastro, não compartilhadas; o usuário pode renomear e arquivar qualquer uma), `kind` (expense/income/investment, imutável), `name`, `icon`, `color` (8 chaves), `sort_order`, `is_archived`. Sem `delete`: só arquivar. Nome único por usuário e tipo, ignorando caixa.
 - **transactions**: `profile_id`, `kind` (`income`, `expense`, `investment`, `redemption`, `profit`, `loss`, `transfer`), `amount_cents` (> 0, sinal derivado do `kind`), `occurred_on` (date), `account_id`, `to_account_id` (só transfer), `category_id`, `holding_id?`, `description`, `payment_method?`, `notes`, `recurring_rule_id?`, `is_classified`, `deleted_at`
   - CHECK: transfer exige `to_account_id ≠ account_id` e não tem categoria; demais exigem categoria do `kind` compatível.
 - **tags** / **transaction_tags**

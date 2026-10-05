@@ -9,9 +9,9 @@ insert into auth.users (id, email, aud, role, raw_user_meta_data) values
   ('bbbbbbbb-0000-0000-0000-000000000002', 'b@teste.dev', 'authenticated', 'authenticated',
    '{"display_name":"Beto"}');
 
-select is((select count(*)::int from public.profiles), 2, 'gatilho cria um perfil por usuário');
-select is((select count(*)::int from public.user_settings), 2, 'gatilho cria configurações');
-select is((select count(*)::int from public.consents), 2, 'termos e privacidade registrados para quem aceitou');
+select is((select count(*)::int from public.profiles where id in ('aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000002')), 2, 'gatilho cria um perfil por usuário');
+select is((select count(*)::int from public.user_settings where profile_id in ('aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000002')), 2, 'gatilho cria configurações');
+select is((select count(*)::int from public.consents where profile_id in ('aaaaaaaa-0000-0000-0000-000000000001', 'bbbbbbbb-0000-0000-0000-000000000002')), 2, 'termos e privacidade registrados para quem aceitou');
 select is(
   (select share_amounts_with_clubs from public.user_settings
     where profile_id = 'aaaaaaaa-0000-0000-0000-000000000001'),
