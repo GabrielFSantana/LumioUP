@@ -38,6 +38,7 @@ function RootNavigator() {
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="perfil" />
         <Stack.Screen name="investimentos" />
+        <Stack.Screen name="relatorios" />
         <Stack.Screen
           name="lancamento-form"
           options={{

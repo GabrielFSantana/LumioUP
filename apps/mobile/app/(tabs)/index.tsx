@@ -203,6 +203,13 @@ export default function InicioScreen() {
       </Card>
 
       <MenuRow
+        title="Relatórios"
+        subtitle="Meses lado a lado, categorias e evolução"
+        leading={<CategoryBadge icon="bar-chart-outline" color="teal" />}
+        onPress={() => router.push('/relatorios')}
+      />
+
+      <MenuRow
         title="Investimentos"
         subtitle={
           totals.contributed > 0

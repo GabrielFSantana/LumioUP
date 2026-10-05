@@ -8,3 +8,5 @@ export * from './holdings';
 export * from './periods';
 export * from './insights';
 export * from './dashboard';
+export * from './reports';
+export * from './report';

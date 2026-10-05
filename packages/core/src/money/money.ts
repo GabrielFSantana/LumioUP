@@ -43,3 +43,15 @@ export function percentOf(part: Cents, whole: Cents): number {
   if (whole === 0) return 0;
   return Math.round((part / whole) * 1000) / 10;
 }
+
+/** Formato curto para eixos de gráfico: "R$ 850", "R$ 1,2 mil", "R$ 3 mi". */
+export function formatCompactBRL(cents: Cents): string {
+  assertCents(cents);
+  const sign = cents < 0 ? '-' : '';
+  const reais = Math.round(Math.abs(cents) / 100);
+  const fmt = (n: number) => String(n).replace('.', ',');
+  if (reais < 1000) return `${sign}R$ ${reais}`;
+  const thousands = Math.round(reais / 100) / 10;
+  if (thousands < 1000) return `${sign}R$ ${fmt(thousands)} mil`;
+  return `${sign}R$ ${fmt(Math.round(reais / 100_000) / 10)} mi`;
+}

@@ -1,4 +1,4 @@
-import { formatBRL, parseBRL, percentOf, sumCents, assertCents } from './money';
+import { assertCents, formatBRL, formatCompactBRL, parseBRL, percentOf, sumCents } from './money';
 
 describe('parseBRL', () => {
   it.each([
@@ -54,5 +54,22 @@ describe('assertCents', () => {
   it('rejeita NaN e Infinity', () => {
     expect(() => assertCents(NaN)).toThrow();
     expect(() => assertCents(Infinity)).toThrow();
+  });
+});
+
+describe('formatCompactBRL', () => {
+  it.each([
+    [0, 'R$ 0'],
+    [85000, 'R$ 850'],
+    [99900, 'R$ 999'],
+    [100000, 'R$ 1 mil'],
+    [125000, 'R$ 1,3 mil'],
+    [500000, 'R$ 5 mil'],
+    [12345600, 'R$ 123,5 mil'],
+    [100000000, 'R$ 1 mi'],
+    [250000000, 'R$ 2,5 mi'],
+    [-500000, '-R$ 5 mil'],
+  ])('%i', (cents, expected) => {
+    expect(formatCompactBRL(cents)).toBe(expected);
   });
 });
