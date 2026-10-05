@@ -1,15 +1,16 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { useTheme } from '../../src/theme';
+import { Platform } from 'react-native';
+import { fonts, radius, spacing, useTheme } from '../../src/theme';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
-const TABS: { name: string; title: string; icon: IconName }[] = [
-  { name: 'index', title: 'Início', icon: 'home-outline' },
-  { name: 'lancamentos', title: 'Lançamentos', icon: 'swap-vertical-outline' },
-  { name: 'metas', title: 'Metas', icon: 'flag-outline' },
-  { name: 'clubes', title: 'Clubes', icon: 'people-outline' },
-  { name: 'aprender', title: 'Aprender', icon: 'school-outline' },
+const TABS: { name: string; title: string; label: string; icon: IconName }[] = [
+  { name: 'index', title: 'Início', label: 'Início', icon: 'home-outline' },
+  { name: 'lancamentos', title: 'Lançamentos', label: 'Lançar', icon: 'swap-vertical-outline' },
+  { name: 'metas', title: 'Metas', label: 'Metas', icon: 'flag-outline' },
+  { name: 'clubes', title: 'Clubes', label: 'Clubes', icon: 'people-outline' },
+  { name: 'aprender', title: 'Aprender', label: 'Aprender', icon: 'school-outline' },
 ];
 
 export default function TabsLayout() {
@@ -18,17 +19,31 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: colors.primary,
+        tabBarActiveTintColor: colors.text,
         tabBarInactiveTintColor: colors.textMuted,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border },
+        tabBarActiveBackgroundColor: colors.primarySoft,
+        tabBarLabelStyle: { fontFamily: fonts.bodyBold, fontSize: 11 },
+        tabBarItemStyle: {
+          borderRadius: radius.md,
+          marginVertical: spacing.xs,
+          marginHorizontal: 2,
+        },
+        tabBarStyle: {
+          backgroundColor: colors.surface,
+          borderTopColor: colors.border,
+          borderTopWidth: 2,
+          height: Platform.OS === 'web' ? 68 : undefined,
+          paddingHorizontal: spacing.xs,
+        },
       }}
     >
-      {TABS.map(({ name, title, icon }) => (
+      {TABS.map(({ name, title, label, icon }) => (
         <Tabs.Screen
           key={name}
           name={name}
           options={{
             title,
+            tabBarLabel: label,
             tabBarIcon: ({ color, size }) => <Ionicons name={icon} size={size} color={color} />,
           }}
         />

@@ -1,18 +1,26 @@
-import { StyleSheet, Text } from 'react-native';
-import { spacing, useTheme } from '../../theme';
+import { StyleSheet, View } from 'react-native';
+import { spacing } from '../../theme';
 import { Card } from './Card';
+import { Mascot } from './Mascot';
+import { Text } from './Text';
 
 export function EmptyState({ title, hint }: { title: string; hint: string }) {
-  const { colors } = useTheme();
   return (
     <Card>
-      <Text style={[styles.title, { color: colors.text }]}>{title}</Text>
-      <Text style={[styles.hint, { color: colors.textMuted }]}>{hint}</Text>
+      <View style={styles.center}>
+        <Mascot size={88} />
+        <Text variant="title" style={styles.centerText}>
+          {title}
+        </Text>
+        <Text tone="textMuted" style={styles.centerText}>
+          {hint}
+        </Text>
+      </View>
     </Card>
   );
 }
 
 const styles = StyleSheet.create({
-  title: { fontSize: 18, fontWeight: '700' },
-  hint: { fontSize: 15, lineHeight: 22, paddingBottom: spacing.xs },
+  center: { alignItems: 'center', gap: spacing.sm, paddingVertical: spacing.sm },
+  centerText: { textAlign: 'center' },
 });

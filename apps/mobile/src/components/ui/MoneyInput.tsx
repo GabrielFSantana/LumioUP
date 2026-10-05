@@ -1,6 +1,7 @@
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, TextInput, View } from 'react-native';
 import { formatBRL } from '@lumioup/core';
-import { minTouch, radius, spacing, useTheme } from '../../theme';
+import { fonts, spacing, useTheme } from '../../theme';
+import { Text } from './Text';
 
 interface MoneyInputProps {
   /** Valor em centavos. */
@@ -20,30 +21,19 @@ export function MoneyInput({ valueCents, onChangeCents, label }: MoneyInputProps
   };
   return (
     <View style={styles.wrapper}>
-      <Text style={[styles.label, { color: colors.textMuted }]}>{label}</Text>
+      <Text variant="caption">{label}</Text>
       <TextInput
         accessibilityLabel={label}
         keyboardType="number-pad"
         value={formatBRL(valueCents)}
         onChangeText={handleChange}
-        style={[
-          styles.input,
-          { color: colors.text, backgroundColor: colors.surface, borderColor: colors.border },
-        ]}
+        style={[styles.input, { color: colors.text }]}
       />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  wrapper: { gap: spacing.xs },
-  label: { fontSize: 14 },
-  input: {
-    minHeight: minTouch + 8,
-    borderWidth: 1,
-    borderRadius: radius.md,
-    paddingHorizontal: spacing.md,
-    fontSize: 28,
-    fontWeight: '700',
-  },
+  wrapper: { alignItems: 'center', gap: spacing.xs, paddingVertical: spacing.sm },
+  input: { fontFamily: fonts.display, fontSize: 44, textAlign: 'center', minWidth: 220 },
 });

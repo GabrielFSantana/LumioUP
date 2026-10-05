@@ -1,10 +1,10 @@
 import { validateEmail } from '@lumioup/core';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Text } from 'react-native';
-import { Button, Screen, TextField } from '../../src/components/ui';
+import { View } from 'react-native';
+import { Button, Mascot, Screen, Text, TextField } from '../../src/components/ui';
 import { useAuth } from '../../src/features/auth/AuthProvider';
-import { useTheme } from '../../src/theme';
+import { fonts, useTheme } from '../../src/theme';
 
 export default function LoginScreen() {
   const { colors } = useTheme();
@@ -29,7 +29,14 @@ export default function LoginScreen() {
   };
 
   return (
-    <Screen title="Entrar">
+    <Screen>
+      <View style={{ alignItems: 'center', gap: 8, paddingVertical: 8 }}>
+        <Mascot size={110} mood="cheer" />
+        <Text variant="display">Entrar</Text>
+        <Text tone="textMuted" style={{ textAlign: 'center' }}>
+          Acenda a luz do seu controle financeiro.
+        </Text>
+      </View>
       <TextField
         label="E-mail"
         value={email}
@@ -49,14 +56,14 @@ export default function LoginScreen() {
         onSubmitEditing={submit}
       />
       {formError ? (
-        <Text accessibilityLiveRegion="polite" style={{ color: colors.danger }}>
+        <Text tone="danger" accessibilityLiveRegion="polite">
           {formError}
         </Text>
       ) : null}
       <Button label={busy ? 'Entrando…' : 'Entrar'} onPress={submit} disabled={busy} />
       <Link
         href="/(auth)/cadastro"
-        style={{ color: colors.primary, textAlign: 'center', padding: 12 }}
+        style={{ color: colors.text, fontFamily: fonts.bodyBold, textAlign: 'center', padding: 12 }}
       >
         Ainda não tenho conta
       </Link>

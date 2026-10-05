@@ -1,24 +1,38 @@
 import type { ReactNode } from 'react';
-import { ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView, StyleSheet } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { spacing, useTheme } from '../../theme';
+import { Text } from './Text';
 
-/** Contêiner padrão das telas das abas: fundo do tema, rolagem e título. */
-export function Screen({ title, children }: { title: string; children: ReactNode }) {
+interface ScreenProps {
+  /** Omita quando a tela monta o próprio cabeçalho (ex.: Início). */
+  title?: string;
+  children: ReactNode;
+}
+
+/** Contêiner padrão das telas: fundo do tema, área segura, rolagem e título. */
+export function Screen({ title, children }: ScreenProps) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   return (
     <ScrollView
       style={{ backgroundColor: colors.background }}
-      contentContainerStyle={styles.content}
+      contentContainerStyle={[
+        styles.content,
+        { paddingTop: insets.top + spacing.md, paddingBottom: insets.bottom + spacing.lg },
+      ]}
+      keyboardShouldPersistTaps="handled"
     >
-      <Text accessibilityRole="header" style={[styles.title, { color: colors.text }]}>
-        {title}
-      </Text>
+      {title ? (
+        <Text accessibilityRole="header" variant="display">
+          {title}
+        </Text>
+      ) : null}
       {children}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { padding: spacing.md, gap: spacing.md },
-  title: { fontSize: 28, fontWeight: '800' },
+  content: { paddingHorizontal: spacing.md, gap: spacing.md },
 });

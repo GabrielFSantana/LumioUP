@@ -1,10 +1,10 @@
 import { validateDisplayName, validateEmail, validatePassword } from '@lumioup/core';
 import { Link } from 'expo-router';
 import { useState } from 'react';
-import { Switch, Text, View } from 'react-native';
-import { Button, Card, Screen, TextField } from '../../src/components/ui';
+import { Switch, View } from 'react-native';
+import { Button, Card, Mascot, Screen, Text, TextField } from '../../src/components/ui';
 import { useAuth } from '../../src/features/auth/AuthProvider';
-import { useTheme } from '../../src/theme';
+import { fonts, useTheme } from '../../src/theme';
 
 export default function CadastroScreen() {
   const { colors } = useTheme();
@@ -21,6 +21,13 @@ export default function CadastroScreen() {
   const [formError, setFormError] = useState<string | null>(null);
   const [confirmEmail, setConfirmEmail] = useState(false);
   const [busy, setBusy] = useState(false);
+
+  const linkStyle = {
+    color: colors.text,
+    fontFamily: fonts.bodyBold,
+    textAlign: 'center' as const,
+    padding: 12,
+  };
 
   const submit = async () => {
     const next = {
@@ -43,16 +50,17 @@ export default function CadastroScreen() {
 
   if (confirmEmail) {
     return (
-      <Screen title="Quase lá!">
+      <Screen>
+        <View style={{ alignItems: 'center', gap: 8 }}>
+          <Mascot size={110} mood="cheer" />
+          <Text variant="display">Quase lá!</Text>
+        </View>
         <Card>
-          <Text style={{ color: colors.text, fontSize: 16, lineHeight: 24 }}>
+          <Text>
             Enviamos um link de confirmação para {email.trim()}. Abra o e-mail e volte para entrar.
           </Text>
         </Card>
-        <Link
-          href="/(auth)/login"
-          style={{ color: colors.primary, textAlign: 'center', padding: 12 }}
-        >
+        <Link href="/(auth)/login" style={linkStyle}>
           Ir para o login
         </Link>
       </Screen>
@@ -60,7 +68,14 @@ export default function CadastroScreen() {
   }
 
   return (
-    <Screen title="Criar conta">
+    <Screen>
+      <View style={{ alignItems: 'center', gap: 8, paddingVertical: 8 }}>
+        <Mascot size={96} />
+        <Text variant="display">Criar conta</Text>
+        <Text tone="textMuted" style={{ textAlign: 'center' }}>
+          Em poucos segundos você começa a acender sua jornada.
+        </Text>
+      </View>
       <TextField
         label="Como podemos te chamar?"
         value={name}
@@ -87,7 +102,7 @@ export default function CadastroScreen() {
         autoComplete="new-password"
       />
       <Card>
-        <Text style={{ color: colors.textMuted, lineHeight: 22 }}>
+        <Text variant="caption" style={{ lineHeight: 20 }}>
           O LumioUP tem finalidade educacional e de organização financeira. Não oferecemos
           recomendação de compra ou venda de investimentos. Você lança seus dados manualmente e eles
           não aparecem para outras pessoas.
@@ -97,22 +112,21 @@ export default function CadastroScreen() {
             accessibilityLabel="Aceito os termos e a política de privacidade"
             value={accepted}
             onValueChange={setAccepted}
+            trackColor={{ true: colors.primaryEdge, false: colors.border }}
+            thumbColor={accepted ? colors.primary : colors.surface}
           />
-          <Text style={{ color: colors.text, flex: 1 }}>
+          <Text variant="bodyBold" style={{ flex: 1 }}>
             Aceito os termos e a política de privacidade
           </Text>
         </View>
       </Card>
       {formError ? (
-        <Text accessibilityLiveRegion="polite" style={{ color: colors.danger }}>
+        <Text tone="danger" accessibilityLiveRegion="polite">
           {formError}
         </Text>
       ) : null}
       <Button label={busy ? 'Criando…' : 'Criar conta'} onPress={submit} disabled={busy} />
-      <Link
-        href="/(auth)/login"
-        style={{ color: colors.primary, textAlign: 'center', padding: 12 }}
-      >
+      <Link href="/(auth)/login" style={linkStyle}>
         Já tenho conta
       </Link>
     </Screen>
