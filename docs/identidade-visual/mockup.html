@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LumioUP — proposta de identidade visual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@500;600;700;800&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #FFF8E7; --surface: #FFFFFF; --ink: #14213D; --ink-2: #55607F; --line: #EADFC2;
+    --luz: #FFC400; --luz-edge: #D49A00; --luz-soft: #FFF1B8;
+    --mata: #17A865; --mata-soft: #D7F5E6;
+    --brasa: #E5533B; --brasa-soft: #FFE0DA;
+    --ceu: #2D7DF6; --ceu-soft: #DCE9FF;
+    --lagoa: #0E9E99; --lagoa-soft: #D2F3F1;
+    --hero-bg: #14213D; --hero-fg: #FFF8E7; --hero-accent: #FFC400;
+    --mata-ink: #0B6B40; --brasa-ink: #9A2E1B;
+    --page: #F1E9D2; --frame: #14213D;
+  }
+  :root[data-theme="dark"] {
+    --bg: #0E1424; --surface: #18203A; --ink: #F5F1E3; --ink-2: #A9B2CF; --line: #2A3558;
+    --luz-soft: #3A3210;
+    --mata: #3DD68F; --mata-soft: #123A2C;
+    --brasa: #FF7A62; --brasa-soft: #3F1F1B;
+    --ceu: #6AAEFF; --ceu-soft: #17294A;
+    --lagoa: #3FD4CE; --lagoa-soft: #10373A;
+    --hero-bg: #FFC400; --hero-fg: #14213D; --hero-accent: #14213D;
+    --mata-ink: #7BF0B8; --brasa-ink: #FFB3A5;
+    --page: #080C18; --frame: #000;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--page); color: var(--ink); font-family: Nunito, system-ui, sans-serif; }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 64px; }
+  h1, h2, h3, .display { font-family: Fredoka, Nunito, sans-serif; font-weight: 600; margin: 0; }
+  h1 { font-size: 40px; line-height: 1.1; }
+  h2 { font-size: 24px; margin: 48px 0 16px; }
+  p { line-height: 1.6; color: var(--ink-2); max-width: 70ch; }
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .toggle { font: 700 14px Nunito; padding: 10px 18px; border-radius: 14px; border: 2px solid var(--ink); background: var(--surface); color: var(--ink); cursor: pointer; box-shadow: 0 3px 0 var(--ink); }
+  .toggle:active { transform: translateY(3px); box-shadow: none; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 12px; }
+  .sw { border-radius: 18px; padding: 14px; border: 2px solid var(--line); background: var(--surface); }
+  .sw i { display: block; height: 56px; border-radius: 12px; margin-bottom: 10px; }
+  .sw b { display: block; font-family: Fredoka; font-weight: 600; }
+  .sw span { font-size: 13px; color: var(--ink-2); }
+  .type { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .card { background: var(--surface); border: 2px solid var(--line); border-bottom-width: 5px; border-radius: 20px; padding: 16px; }
+  .phones { display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+  .phone { width: 304px; height: 640px; background: var(--bg); border: 9px solid var(--frame); border-radius: 42px; overflow: hidden; position: relative; display: flex; flex-direction: column; }
+  .scr { flex: 1; padding: 18px 16px 8px; display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+  .row { display: flex; align-items: center; gap: 8px; }
+  .between { justify-content: space-between; }
+  .muted { color: var(--ink-2); font-size: 13px; font-weight: 600; }
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; border-radius: 999px; font: 700 13px Nunito; border: 2px solid var(--line); background: var(--surface); }
+  .chip svg { width: 16px; height: 16px; }
+  .hello { font: 600 20px Fredoka; line-height: 1.15; }
+  .hero { background: var(--hero-bg); color: var(--hero-fg); border-radius: 24px; padding: 16px; box-shadow: 0 5px 0 rgba(0,0,0,.25); }
+  .hero .n { font: 600 34px Fredoka; color: var(--hero-accent); line-height: 1.1; }
+  .hero .l { font-size: 13px; opacity: .8; font-weight: 700; }
+  .pill { font: 700 12px Nunito; padding: 4px 10px; border-radius: 999px; }
+  .week { display: flex; justify-content: space-between; }
+  .day { width: 34px; text-align: center; font: 700 11px Nunito; color: var(--ink-2); }
+  .day i { display: block; width: 34px; height: 34px; border-radius: 50%; border: 2px solid var(--line); margin-bottom: 4px; background: var(--surface); }
+  .day.on i { background: var(--luz); border-color: var(--luz-edge); box-shadow: 0 3px 0 var(--luz-edge); }
+  .bar { height: 16px; border-radius: 999px; background: var(--line); overflow: hidden; position: relative; }
+  .bar b { position: absolute; inset: 0 auto 0 0; background: var(--luz); border-radius: 999px; box-shadow: inset 0 -4px 0 rgba(0,0,0,.12); }
+  .bar b::after { content: ""; position: absolute; left: 8px; right: 8px; top: 3px; height: 4px; border-radius: 4px; background: rgba(255,255,255,.55); }
+  .btn { background: var(--luz); color: #14213D; border-radius: 16px; padding: 14px; text-align: center; font: 600 17px Fredoka; box-shadow: 0 5px 0 var(--luz-edge); letter-spacing: .2px; }
+  .btn.sec { background: var(--surface); color: var(--ink); border: 2px solid var(--line); box-shadow: 0 4px 0 var(--line); }
+  .tabs { display: flex; justify-content: space-around; padding: 8px 6px 10px; border-top: 2px solid var(--line); background: var(--surface); }
+  .tab { display: flex; flex-direction: column; align-items: center; gap: 2px; font: 700 10px Nunito; color: var(--ink-2); width: 54px; padding: 4px 0; border-radius: 12px; }
+  .tab svg { width: 24px; height: 24px; }
+  .tab.on { color: var(--ink); background: var(--luz-soft); }
+  .icon { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .seg div { text-align: center; padding: 10px 4px; border-radius: 14px; border: 2px solid var(--line); background: var(--surface); font: 600 14px Fredoka; }
+  .seg .on { background: var(--brasa-soft); border-color: var(--brasa); color: var(--brasa); box-shadow: 0 3px 0 var(--brasa); }
+  .cats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .cat { border: 2px solid var(--line); border-radius: 16px; padding: 10px 4px; text-align: center; font: 700 12px Nunito; background: var(--surface); }
+  .cat i { display: block; width: 30px; height: 30px; border-radius: 10px; margin: 0 auto 6px; }
+  .cat.on { border-color: var(--ink); box-shadow: 0 3px 0 var(--ink); }
+  .amount { text-align: center; padding: 8px 0; }
+  .amount .v { font: 600 44px Fredoka; line-height: 1; }
+  .amount .v small { font-size: 24px; color: var(--ink-2); }
+  .rays { position: absolute; inset: 0; background: repeating-conic-gradient(from 0deg at 50% 38%, var(--luz-soft) 0 10deg, transparent 10deg 20deg); opacity: .85; }
+  .center { position: relative; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 10px; padding-top: 28px; flex: 1; }
+  .lvl { font: 600 15px Fredoka; background: var(--ink); color: var(--bg); padding: 6px 16px; border-radius: 999px; }
+  .note { font-size: 13px; color: var(--ink-2); max-width: 70ch; }
+  ul.rules { color: var(--ink-2); line-height: 1.8; padding-left: 20px; max-width: 75ch; }
+  ul.rules b { color: var(--ink); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div>
+      <div class="chip" style="margin-bottom:12px">Proposta · não implementada no app</div>
+      <h1>LumioUP<br />acenda sua jornada financeira</h1>
+    </div>
+    <button class="toggle" id="t">Alternar claro / escuro</button>
+  </div>
+  <p>Direção: gamificação no espírito de Duolingo (progresso constante, recompensas visuais, mascote, botões que "afundam" ao toque), mas com identidade própria baseada na ideia de <b>luz</b>: o usuário acende a luz do próprio controle financeiro. Valores e nomes das telas abaixo são ilustrativos.</p>
+
+  <h2>Paleta</h2>
+  <div class="swatches">
+    <div class="sw"><i style="background:#FFC400"></i><b>Luz</b><span>#FFC400 · ação principal, XP</span></div>
+    <div class="sw"><i style="background:#14213D"></i><b>Tinta</b><span>#14213D · texto e destaque</span></div>
+    <div class="sw"><i style="background:#FFF8E7;border:2px solid #EADFC2"></i><b>Papel</b><span>#FFF8E7 · fundo</span></div>
+    <div class="sw"><i style="background:#17A865"></i><b>Mata</b><span>#17A865 · receitas</span></div>
+    <div class="sw"><i style="background:#E5533B"></i><b>Brasa</b><span>#E5533B · gastos</span></div>
+    <div class="sw"><i style="background:#2D7DF6"></i><b>Céu</b><span>#2D7DF6 · investimentos</span></div>
+    <div class="sw"><i style="background:#0E9E99"></i><b>Lagoa</b><span>#0E9E99 · metas</span></div>
+  </div>
+
+  <h2>Tipografia e formas</h2>
+  <div class="type">
+    <div class="card"><div class="display" style="font-size:34px">R$ 2.480,00</div><div class="muted">Fredoka 600 · títulos, números, botões</div></div>
+    <div class="card"><div style="font-size:17px;font-weight:700">Você registrou 5 dias seguidos.</div><div class="muted" style="margin-top:6px">Nunito 600-800 · textos e rótulos</div></div>
+    <div class="card"><div class="row"><div class="btn" style="flex:1">Salvar gasto</div><div class="btn sec" style="flex:1">Agora não</div></div><div class="muted" style="margin-top:12px">Botões com "base" sólida de 5 px: afundam ao toque. Cantos de 16 a 24 px, sem sombras difusas.</div></div>
+  </div>
+
+  <h2>Telas-chave</h2>
+  <div class="phones">
+
+    <div class="phone">
+      <div class="scr">
+        <div class="row between">
+          <div class="row">
+            <svg width="46" height="46" viewBox="0 0 120 120"><circle cx="60" cy="64" r="54" fill="#FFE27A" opacity=".55"/><line x1="60" y1="30" x2="60" y2="14" stroke="#14213D" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="12" r="7" fill="#fff" stroke="#14213D" stroke-width="4"/><circle cx="60" cy="68" r="36" fill="#FFC400" stroke="#14213D" stroke-width="5"/><ellipse cx="47" cy="62" rx="8" ry="10" fill="#fff"/><ellipse cx="73" cy="62" rx="8" ry="10" fill="#fff"/><circle cx="49" cy="64" r="5" fill="#14213D"/><circle cx="75" cy="64" r="5" fill="#14213D"/><path d="M48 82 Q60 94 72 82" fill="none" stroke="#14213D" stroke-width="5" stroke-linecap="round"/></svg>
+            <div class="hello">Oi, Ana!<br /><span class="muted">Sua luz de hoje está acesa?</span></div>
+          </div>
+        </div>
+        <div class="row">
+          <span class="chip" style="color:#E07B00"><svg class="icon" viewBox="0 0 24 24"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z"/></svg>5 dias</span>
+          <span class="chip">Nível 2 · Organizador</span>
+        </div>
+        <div class="week">
+          <div class="day on"><i></i>S</div><div class="day on"><i></i>T</div><div class="day on"><i></i>Q</div><div class="day on"><i></i>Q</div><div class="day on"><i></i>S</div><div class="day"><i></i>S</div><div class="day"><i></i>D</div>
+        </div>
+        <div class="hero">
+          <div class="l">Saldo de outubro</div>
+          <div class="n">R$ 1.240,50</div>
+          <div class="row" style="margin-top:10px;gap:6px;flex-wrap:wrap">
+            <span class="pill" style="background:var(--mata-soft);color:var(--mata-ink)">+ R$ 3.800 receitas</span>
+            <span class="pill" style="background:var(--brasa-soft);color:var(--brasa-ink)">- R$ 2.559 gastos</span>
+          </div>
+        </div>
+        <div class="card">
+          <div class="row between"><b class="display" style="font-size:16px">Missão do dia</b><span class="pill" style="background:var(--luz-soft);color:var(--ink)">+20 XP</span></div>
+          <div class="muted" style="margin:4px 0 10px">Registre 2 lançamentos hoje</div>
+          <div class="bar"><b style="width:50%"></b></div>
+        </div>
+        <div class="card">
+          <div class="row between"><b class="display" style="font-size:16px">Viagem</b><span class="muted">62%</span></div>
+          <div class="bar" style="margin-top:8px"><b style="width:62%;background:var(--lagoa);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)"></b></div>
+        </div>
+      </div>
+      <div class="tabs">
+        <div class="tab on"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Início</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4v16M7 4L3 8M7 4l4 4M17 20V4M17 20l-4-4M17 20l4-4"/></svg>Lançar</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>Metas</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Clubes</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Aprender</div>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="scr">
+        <div class="row between"><b class="display" style="font-size:20px">Novo lançamento</b><span class="chip">Fechar</span></div>
+        <div class="seg"><div class="on">Gasto</div><div>Receita</div><div>Invest.</div></div>
+        <div class="amount"><div class="muted">Quanto foi?</div><div class="v"><small>R$</small> 48<small>,90</small></div></div>
+        <div class="cats">
+          <div class="cat on"><i style="background:var(--brasa-soft);border:2px solid var(--brasa)"></i>Alimentação</div>
+          <div class="cat"><i style="background:var(--ceu-soft)"></i>Transporte</div>
+          <div class="cat"><i style="background:var(--mata-soft)"></i>Saúde</div>
+          <div class="cat"><i style="background:var(--lagoa-soft)"></i>Lazer</div>
+          <div class="cat"><i style="background:var(--luz-soft)"></i>Moradia</div>
+          <div class="cat"><i style="background:var(--line)"></i>Outros</div>
+        </div>
+        <div class="card" style="padding:12px"><span class="muted">Descrição (opcional)</span><div style="font-weight:700;margin-top:2px">Almoço com a equipe</div></div>
+        <div style="flex:1"></div>
+        <div class="btn">Salvar · +10 XP</div>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="rays"></div>
+      <div class="scr" style="position:relative">
+        <div class="center">
+          <div class="lvl">NÍVEL 2</div>
+          <svg width="190" height="190" viewBox="0 0 120 120"><circle cx="60" cy="64" r="56" fill="#FFE27A" opacity=".7"/><line x1="60" y1="30" x2="60" y2="12" stroke="#14213D" stroke-width="5" stroke-linecap="round"/><circle cx="60" cy="10" r="8" fill="#fff" stroke="#14213D" stroke-width="4"/><circle cx="60" cy="68" r="38" fill="#FFC400" stroke="#14213D" stroke-width="5"/><ellipse cx="46" cy="62" rx="9" ry="11" fill="#fff"/><ellipse cx="74" cy="62" rx="9" ry="11" fill="#fff"/><circle cx="48" cy="63" r="5.5" fill="#14213D"/><circle cx="76" cy="63" r="5.5" fill="#14213D"/><path d="M44 80 Q60 98 76 80 Z" fill="#14213D" stroke="#14213D" stroke-width="4" stroke-linejoin="round"/><circle cx="36" cy="76" r="5" fill="#FF9A7A" opacity=".8"/><circle cx="84" cy="76" r="5" fill="#FF9A7A" opacity=".8"/></svg>
+          <div class="display" style="font-size:30px">Você virou Organizador!</div>
+          <div class="muted" style="max-width:220px">7 dias de registros e 3 missões concluídas. A luz do Lumi ficou mais forte.</div>
+          <div style="width:100%;margin-top:6px"><div class="bar"><b style="width:100%"></b></div><div class="muted" style="margin-top:6px">240 / 240 XP</div></div>
+        </div>
+        <div class="btn">Continuar</div>
+      </div>
+    </div>
+
+    <div class="phone">
+      <div class="scr">
+        <div class="row between"><b class="display" style="font-size:20px">Clube dos Poupadores</b></div>
+        <div class="muted">Ranking da semana · por XP e consistência</div>
+        <div class="card row" style="border-color:var(--luz-edge);background:var(--luz-soft)"><b class="display" style="font-size:22px;width:26px">1</b><div style="flex:1"><b>Bia</b><div class="muted">7 dias seguidos</div></div><b class="display">420 XP</b></div>
+        <div class="card row"><b class="display" style="font-size:22px;width:26px">2</b><div style="flex:1"><b>Você</b><div class="muted">5 dias seguidos</div></div><b class="display">360 XP</b></div>
+        <div class="card row"><b class="display" style="font-size:22px;width:26px">3</b><div style="flex:1"><b>Caio</b><div class="muted">3 dias seguidos</div></div><b class="display">290 XP</b></div>
+        <div class="card">
+          <div class="row between"><b class="display" style="font-size:16px">Desafio: 30 dias de registro</b></div>
+          <div class="muted" style="margin:4px 0 10px">O clube todo: 18 de 30 dias</div>
+          <div class="bar"><b style="width:60%;background:var(--lagoa);box-shadow:inset 0 -4px 0 rgba(0,0,0,.18)"></b></div>
+        </div>
+        <div class="note">O ranking nunca mostra valores em reais, só XP, sequência e missões.</div>
+      </div>
+      <div class="tabs">
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>Início</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M7 4v16M7 4L3 8M7 4l4 4M17 20V4M17 20l-4-4M17 20l4-4"/></svg>Lançar</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M5 21V4M5 4h11l-2 4 2 4H5"/></svg>Metas</div>
+        <div class="tab on"><svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></svg>Clubes</div>
+        <div class="tab"><svg class="icon" viewBox="0 0 24 24"><path d="M2 9l10-5 10 5-10 5zM6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5"/></svg>Aprender</div>
+      </div>
+    </div>
+  </div>
+
+  <h2>Princípios</h2>
+  <ul class="rules">
+    <li><b>Luz como conceito:</b> mascote Lumi (vaga-lume/lâmpada), XP é "luz", nível é a intensidade da lâmpada, sequência é o brilho de dias seguidos.</li>
+    <li><b>Cor tem significado fixo:</b> verde receita, coral gasto, azul investimento, verde-azulado meta. Amarelo é só ação e progresso.</li>
+    <li><b>Sem "cara de IA":</b> sem gradientes roxos, sem cartões cinza genéricos, sem sombras difusas. Fundo papel quente, contornos firmes, profundidade com base sólida.</li>
+    <li><b>Tom positivo, sem julgamento:</b> "Sua luz de hoje está acesa?", nunca "Você gastou demais".</li>
+    <li><b>Movimento com propósito:</b> botão afunda, barra de XP enche, nível sobe com raios. Respeita "reduzir movimento".</li>
+    <li><b>Privacidade visível:</b> clubes mostram XP e sequência, nunca valores em reais.</li>
+    <li><b>Acessibilidade:</b> contraste AA, alvos de toque de 48 px, texto escalável, modo escuro completo.</li>
+  </ul>
+  <p class="note">O Lumi desta página é um rascunho vetorial. A arte final do mascote (poses, expressões, 8 intensidades de luz) deve ser desenhada por ilustrador ou gerada e revisada antes da publicação.</p>
+</div>
+<script>
+  document.getElementById('t').addEventListener('click', function () {
+    var r = document.documentElement;
+    r.setAttribute('data-theme', r.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+  });
+</script>
+</body>
+</html>
