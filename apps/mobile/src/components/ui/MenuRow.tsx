@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
-import { edge, minTouch, radius, spacing, useTheme } from '../../theme';
+import { edge, minTouch, radius, spacing, useTheme, type Palette } from '../../theme';
 import { Text } from './Text';
 
 interface MenuRowProps {
@@ -12,10 +12,20 @@ interface MenuRowProps {
   leading?: ReactNode;
   /** Texto de apoio à direita (ex.: saldo). */
   trailing?: string;
+  /** Cor do texto da direita (ex.: receita em verde). */
+  trailingTone?: keyof Palette;
   muted?: boolean;
 }
 
-export function MenuRow({ title, subtitle, onPress, leading, trailing, muted }: MenuRowProps) {
+export function MenuRow({
+  title,
+  subtitle,
+  onPress,
+  leading,
+  trailing,
+  trailingTone,
+  muted,
+}: MenuRowProps) {
   const { colors } = useTheme();
   return (
     <Pressable
@@ -37,7 +47,11 @@ export function MenuRow({ title, subtitle, onPress, leading, trailing, muted }: 
         <Text variant="bodyBold">{title}</Text>
         {subtitle ? <Text variant="caption">{subtitle}</Text> : null}
       </View>
-      {trailing ? <Text variant="bodyBold">{trailing}</Text> : null}
+      {trailing ? (
+        <Text variant="bodyBold" tone={trailingTone}>
+          {trailing}
+        </Text>
+      ) : null}
       <Ionicons name="chevron-forward" size={18} color={colors.textMuted} />
     </Pressable>
   );

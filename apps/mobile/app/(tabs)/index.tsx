@@ -1,8 +1,9 @@
-import { formatBRL, summarize } from '@lumioup/core';
+import { formatBRL, monthPeriod, summarize, toDateString } from '@lumioup/core';
 import { useRouter } from 'expo-router';
 import { Pressable, StyleSheet, View } from 'react-native';
 import { Card, Chip, Mascot, ProgressBar, Screen, Text } from '../../src/components/ui';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
+import { useTransactions } from '../../src/features/transactions/hooks';
 import { useAuth } from '../../src/features/auth/AuthProvider';
 import { radius, spacing, useTheme } from '../../src/theme';
 
@@ -11,8 +12,9 @@ export default function InicioScreen() {
   const router = useRouter();
   const { session } = useAuth();
   const name = String(session?.user.user_metadata?.display_name ?? '').trim();
-  // Ainda não há lançamentos: os totais vêm do core com lista vazia (sem dados inventados).
-  const summary = summarize([]);
+  const period = monthPeriod(toDateString(new Date()));
+  const { data: transactions } = useTransactions(period);
+  const summary = summarize(transactions ?? []);
 
   return (
     <Screen>
@@ -39,12 +41,12 @@ export default function InicioScreen() {
 
       <View style={[styles.hero, { backgroundColor: colors.heroBackground }]}>
         <Text variant="caption" style={{ color: colors.heroText, opacity: 0.8 }}>
-          Saldo do período
+          Saldo do mês
         </Text>
         <Text
           variant="display"
           style={{ color: colors.heroAccent, fontSize: 36, lineHeight: 42 }}
-          accessibilityLabel={`Saldo do período: ${formatBRL(summary.balance)}`}
+          accessibilityLabel={`Saldo do mês: ${formatBRL(summary.balance)}`}
         >
           {formatBRL(summary.balance)}
         </Text>

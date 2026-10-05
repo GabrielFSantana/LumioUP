@@ -20,8 +20,8 @@ export interface Transaction {
   occurredOn: DateString;
   accountId?: string;
   /** Apenas para `transfer`. */
-  toAccountId?: string;
-  categoryId?: string;
+  toAccountId?: string | null;
+  categoryId?: string | null;
 }
 
 /** Intervalo inclusivo. */

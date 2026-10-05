@@ -16,8 +16,8 @@ export function accountBalances(
   upTo?: DateString,
 ): Map<string, Cents> {
   const balances = new Map(accounts.map((a) => [a.accountId, a.openingBalanceCents]));
-  const add = (id: string | undefined, delta: Cents) => {
-    if (id !== undefined && balances.has(id)) balances.set(id, (balances.get(id) as Cents) + delta);
+  const add = (id: string | null | undefined, delta: Cents) => {
+    if (id != null && balances.has(id)) balances.set(id, (balances.get(id) as Cents) + delta);
   };
   for (const t of items) {
     if (upTo && t.occurredOn > upTo) continue;

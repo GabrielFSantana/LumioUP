@@ -5,11 +5,11 @@ import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
-import { Text } from '../src/components/ui';
+import { Text, ToastProvider } from '../src/components/ui';
 import { AuthProvider, useAuth } from '../src/features/auth/AuthProvider';
 import { queryClient } from '../src/lib/queryClient';
 import { isSupabaseConfigured } from '../src/lib/supabase';
-import { useTheme } from '../src/theme';
+import { fonts, useTheme } from '../src/theme';
 
 function Splash() {
   const { colors } = useTheme();
@@ -29,6 +29,7 @@ function Splash() {
 
 function RootNavigator() {
   const { session, loading } = useAuth();
+  const { colors } = useTheme();
   if (loading) return <Splash />;
 
   return (
@@ -36,6 +37,20 @@ function RootNavigator() {
       <Stack.Protected guard={Boolean(session)}>
         <Stack.Screen name="(tabs)" />
         <Stack.Screen name="perfil" />
+        <Stack.Screen
+          name="lancamento-form"
+          options={{
+            presentation: 'modal',
+            headerShown: true,
+            title: 'Lançamento',
+            headerStyle: { backgroundColor: colors.background },
+            headerTintColor: colors.text,
+            headerTitleStyle: { fontFamily: fonts.display, fontSize: 20 },
+            headerShadowVisible: false,
+            headerBackButtonDisplayMode: 'minimal',
+            contentStyle: { backgroundColor: colors.background },
+          }}
+        />
       </Stack.Protected>
       <Stack.Protected guard={!session}>
         <Stack.Screen name="(auth)" />
@@ -78,8 +93,10 @@ export default function RootLayout() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <StatusBar style="auto" />
-        <RootNavigator />
+        <ToastProvider>
+          <StatusBar style="auto" />
+          <RootNavigator />
+        </ToastProvider>
       </AuthProvider>
     </QueryClientProvider>
   );
