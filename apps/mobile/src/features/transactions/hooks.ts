@@ -3,6 +3,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
 import {
   createTransaction,
+  fetchAllTransactions,
   fetchInvestmentTransactions,
   fetchTransaction,
   fetchTransactions,
@@ -18,6 +19,10 @@ export const useTransactions = (period: Period) =>
     queryKey: [...KEY, period.from, period.to],
     queryFn: () => fetchTransactions(period),
   });
+
+/** Todos os lançamentos (alimenta o painel do Início). Invalida junto com os demais. */
+export const useAllTransactions = () =>
+  useQuery({ queryKey: [...KEY, 'all'], queryFn: fetchAllTransactions });
 
 export const useInvestmentTransactions = () =>
   useQuery({ queryKey: [...KEY, 'investments'], queryFn: fetchInvestmentTransactions });

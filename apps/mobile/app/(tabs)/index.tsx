@@ -1,31 +1,76 @@
-import { formatBRL, monthPeriod, summarize, toDateString } from '@lumioup/core';
+import { Ionicons } from '@expo/vector-icons';
+import {
+  buildDashboard,
+  formatBRL,
+  formatPercent,
+  toDateString,
+  type AccountOpening,
+  type Transaction,
+} from '@lumioup/core';
 import { useRouter } from 'expo-router';
+import { useMemo, useState } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
 import {
   Card,
   CategoryBadge,
   Chip,
+  EmptyState,
   Mascot,
   MenuRow,
   ProgressBar,
   Screen,
   Text,
 } from '../../src/components/ui';
+import { useAuth } from '../../src/features/auth/AuthProvider';
+import { useAccounts, useCategories } from '../../src/features/catalog/hooks';
+import { CategoryBars } from '../../src/features/dashboard/CategoryBars';
+import { MetricTile } from '../../src/features/dashboard/MetricTile';
+import { NetWorthChart } from '../../src/features/dashboard/NetWorthChart';
+import { PeriodSelector, type PeriodState } from '../../src/features/dashboard/PeriodSelector';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
 import { useInvestmentSummary } from '../../src/features/investments/hooks';
-import { useTransactions } from '../../src/features/transactions/hooks';
-import { useAuth } from '../../src/features/auth/AuthProvider';
+import { useAllTransactions } from '../../src/features/transactions/hooks';
 import { radius, spacing, useTheme } from '../../src/theme';
+
+const signed = (cents: number) => (cents > 0 ? `+ ${formatBRL(cents)}` : formatBRL(cents));
 
 export default function InicioScreen() {
   const { colors } = useTheme();
   const router = useRouter();
   const { session } = useAuth();
   const name = String(session?.user.user_metadata?.display_name ?? '').trim();
-  const period = monthPeriod(toDateString(new Date()));
-  const { data: transactions } = useTransactions(period);
-  const summary = summarize(transactions ?? []);
+  const today = toDateString(new Date());
+
+  const [period, setPeriod] = useState<PeriodState>({ kind: 'month', anchor: today, custom: null });
+  const { data: transactions, isLoading } = useAllTransactions();
+  const { data: accounts } = useAccounts();
+  const { data: categories } = useCategories();
   const { totals } = useInvestmentSummary();
+
+  const categoryById = useMemo(
+    () => new Map((categories ?? []).map((c) => [c.id, c])),
+    [categories],
+  );
+
+  const dashboard = useMemo(() => {
+    const openings: AccountOpening[] = (accounts ?? []).map((a) => ({
+      accountId: a.id,
+      openingBalanceCents: a.openingBalanceCents,
+    }));
+    return buildDashboard({
+      kind: period.kind,
+      anchor: period.anchor,
+      custom: period.custom ?? undefined,
+      today,
+      transactions: (transactions ?? []) as Transaction[],
+      accounts: openings,
+      categoryName: (id) => (id ? categoryById.get(id)?.name : undefined),
+    });
+  }, [period, transactions, accounts, categoryById, today]);
+
+  const { summary } = dashboard;
+  const worth = dashboard.netWorthNow;
+  const change = dashboard.netWorthChangeCents;
 
   return (
     <Screen>
@@ -50,14 +95,16 @@ export default function InicioScreen() {
 
       <WeekStrip activeDays={[]} />
 
+      <PeriodSelector state={period} onChange={setPeriod} />
+
       <View style={[styles.hero, { backgroundColor: colors.heroBackground }]}>
         <Text variant="caption" style={{ color: colors.heroText, opacity: 0.8 }}>
-          Saldo do mês
+          {`Saldo · ${dashboard.label}`}
         </Text>
         <Text
           variant="display"
           style={{ color: colors.heroAccent, fontSize: 36, lineHeight: 42 }}
-          accessibilityLabel={`Saldo do mês: ${formatBRL(summary.balance)}`}
+          accessibilityLabel={`Saldo do período: ${formatBRL(summary.balance)}`}
         >
           {formatBRL(summary.balance)}
         </Text>
@@ -74,6 +121,73 @@ export default function InicioScreen() {
           </View>
         </View>
       </View>
+
+      {dashboard.insights.length > 0 ? (
+        <Card>
+          {dashboard.insights.map((sentence) => (
+            <View key={sentence} style={styles.insight}>
+              <Ionicons name="bulb-outline" size={20} color={colors.primaryEdge} />
+              <Text style={{ flex: 1 }}>{sentence}</Text>
+            </View>
+          ))}
+        </Card>
+      ) : null}
+
+      <View style={styles.tiles}>
+        <MetricTile label="Investido" value={formatBRL(summary.invested)} tone="investment" />
+        <MetricTile
+          label="Lucro e perda"
+          value={signed(summary.profitLoss)}
+          tone={
+            summary.profitLoss > 0 ? 'incomeInk' : summary.profitLoss < 0 ? 'expenseInk' : 'text'
+          }
+        />
+        <MetricTile
+          label="Da renda investida"
+          value={summary.income > 0 ? `${formatPercent(summary.investedPercent)}%` : '-'}
+        />
+        <MetricTile label="Resgates" value={formatBRL(summary.redeemed)} />
+      </View>
+
+      {!isLoading && dashboard.isEmpty ? (
+        <EmptyState
+          title="Sem lançamentos neste período"
+          hint="Quando você registrar receitas e gastos, os gráficos e comparações aparecem aqui."
+        />
+      ) : null}
+
+      {dashboard.topExpenses.top.length > 0 ? (
+        <Card>
+          <Text variant="heading">Para onde foi seu dinheiro</Text>
+          <CategoryBars data={dashboard.topExpenses} categoryById={categoryById} />
+        </Card>
+      ) : null}
+
+      {dashboard.topIncome.top.length > 0 ? (
+        <Card>
+          <Text variant="heading">De onde veio</Text>
+          <CategoryBars data={dashboard.topIncome} categoryById={categoryById} />
+        </Card>
+      ) : null}
+
+      <Card>
+        <Text variant="heading">Patrimônio</Text>
+        <Text variant="display" style={{ fontSize: 30, lineHeight: 36 }}>
+          {formatBRL(worth.total)}
+        </Text>
+        <Text variant="caption">
+          {`Em caixa ${formatBRL(worth.cash)} · Investido ${formatBRL(worth.invested)}`}
+        </Text>
+        {change !== null ? (
+          <Text
+            variant="caption"
+            tone={change > 0 ? 'incomeInk' : change < 0 ? 'expenseInk' : 'textMuted'}
+          >
+            {change === 0 ? 'Sem variação neste período' : `${signed(change)} neste período`}
+          </Text>
+        ) : null}
+        <NetWorthChart points={dashboard.netWorthSeries} />
+      </Card>
 
       <Card>
         <View style={styles.rowBetween}>
@@ -93,7 +207,7 @@ export default function InicioScreen() {
         subtitle={
           totals.contributed > 0
             ? `Aportado ${formatBRL(totals.contributed)}${
-                totals.returnPercent !== null ? ` · ${totals.returnPercent}%` : ''
+                totals.returnPercent !== null ? ` · ${formatPercent(totals.returnPercent)}%` : ''
               }`
             : 'Crie uma posição e registre seus aportes'
         }
@@ -119,4 +233,6 @@ const styles = StyleSheet.create({
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.sm },
   pill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
   rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  insight: { flexDirection: 'row', gap: spacing.sm, alignItems: 'flex-start' },
+  tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
 });

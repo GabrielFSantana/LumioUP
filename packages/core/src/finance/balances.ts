@@ -77,3 +77,19 @@ export function netWorth(
   const cash = opening + flow - netInvested;
   return { cash, invested, total: cash + invested };
 }
+
+export interface NetWorthPoint {
+  date: DateString;
+  total: Cents;
+  cash: Cents;
+  invested: Cents;
+}
+
+/** Patrimônio líquido em cada uma das datas informadas (para o gráfico de evolução). */
+export function netWorthSeries(
+  accounts: readonly AccountOpening[],
+  items: readonly Transaction[],
+  dates: readonly DateString[],
+): NetWorthPoint[] {
+  return dates.map((date) => ({ date, ...netWorth(accounts, items, date) }));
+}

@@ -5,3 +5,6 @@ export * from './balances';
 export * from './breakdown';
 export * from './dates';
 export * from './holdings';
+export * from './periods';
+export * from './insights';
+export * from './dashboard';
