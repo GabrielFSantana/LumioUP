@@ -201,8 +201,9 @@ profiles 1─N notifications, device_tokens, audit_log
 - **Lucros e perdas** = Σ `profit` − Σ `loss`
 - **Saldo do período** = receitas − despesas − aportes + resgates (o que sobrou em caixa)
 - **% da renda investida** = aportes / receitas (0 quando não há receita)
-- **Patrimônio líquido** = saldo inicial das contas + Σ fluxo acumulado + valor líquido investido + lucros − perdas
-  *(a validar com você: ver Pergunta 1 na seção 11)*
+- **Patrimônio líquido** = saldo inicial das contas + receitas − despesas + lucros − perdas
+  (aportes, resgates e transferências só movem valor entre caixa e investimentos; versão anterior contava o investido em duplicidade. Corrigido na Etapa 1.)
+  - Caixa = patrimônio − investido; Investido atual = aportes − resgates + lucros − perdas
 
 ---
 
@@ -327,7 +328,7 @@ Regra de processo: nenhuma etapa que toque em dinheiro, XP ou permissões avanç
 
 ## 11. Perguntas para você validar (antes da Etapa 0)
 
-1. **Patrimônio líquido**: como não há integração, sugiro definir como *saldo inicial informado + fluxo acumulado + valor líquido investido ± lucros/perdas*. Confirma? Ou prefere o usuário informar manualmente o valor atual de cada investimento?
+1. **Patrimônio líquido**: implementado como *saldo inicial + receitas − despesas + lucros − perdas* (ver seção 5). Ou prefere o usuário informar manualmente o valor atual de cada investimento?
 2. **Contas**: o MVP terá "contas" (carteira, banco) para dar sentido às transferências, ou só categorias? Recomendo contas simples (necessárias para transferência fazer sentido).
 3. **Backend**: aceita **Supabase** (recomendado) ou prefere backend próprio?
 4. **Login**: só e-mail/senha no MVP (Google/Apple depois)? Apple exige "Entrar com Apple" se houver login social no iOS.
