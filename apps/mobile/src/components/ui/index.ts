@@ -4,3 +4,4 @@ export { MoneyInput } from './MoneyInput';
 export { ProgressBar } from './ProgressBar';
 export { Screen } from './Screen';
 export { EmptyState } from './EmptyState';
+export { TextField } from './TextField';

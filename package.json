@@ -6,7 +6,10 @@
     "lint": "eslint .",
     "typecheck": "npm run typecheck --workspaces --if-present",
     "test": "npm run test --workspaces --if-present",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "db:start": "npx supabase start",
+    "db:stop": "npx supabase stop",
+    "db:test": "npx supabase test db"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",

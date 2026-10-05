@@ -1,10 +1,12 @@
 import { formatBRL, summarize } from '@lumioup/core';
 import { Text } from 'react-native';
-import { Card, ProgressBar, Screen } from '../../src/components/ui';
+import { Button, Card, ProgressBar, Screen } from '../../src/components/ui';
+import { useAuth } from '../../src/features/auth/AuthProvider';
 import { useTheme } from '../../src/theme';
 
 export default function InicioScreen() {
   const { colors } = useTheme();
+  const { session, signOut } = useAuth();
   // Ainda não há lançamentos: os totais vêm do core com lista vazia (sem dados inventados).
   const summary = summarize([]);
   return (
@@ -24,6 +26,11 @@ export default function InicioScreen() {
         <Text style={{ color: colors.textMuted }}>
           Registre seu primeiro lançamento para ganhar XP.
         </Text>
+      </Card>
+      {/* Provisório: a tela de Perfil (Etapa de perfil/configurações) assumirá o "Sair". */}
+      <Card>
+        <Text style={{ color: colors.textMuted }}>Conectado como {session?.user.email}</Text>
+        <Button label="Sair" variant="secondary" onPress={signOut} />
       </Card>
     </Screen>
   );
