@@ -15,6 +15,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useMemo } from 'react';
 import { useAuth } from '../auth/AuthProvider';
+import { useRefreshXp } from '../gamification/hooks';
 import { useTransactions } from '../transactions/hooks';
 import {
   addContribution,
@@ -38,11 +39,14 @@ export const useContributions = () =>
 
 function useInvalidateGoals() {
   const qc = useQueryClient();
+  const refreshXp = useRefreshXp();
   // O status da meta muda no banco quando as contribuições mudam; por isso invalida os dois.
+  // Criar, contribuir e concluir metas também concede XP, que é buscado de novo.
   return () =>
     Promise.all([
       qc.invalidateQueries({ queryKey: GOALS_KEY }),
       qc.invalidateQueries({ queryKey: CONTRIBUTIONS_KEY }),
+      refreshXp(),
     ]);
 }
 

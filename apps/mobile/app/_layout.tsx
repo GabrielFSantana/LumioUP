@@ -7,6 +7,8 @@ import { StatusBar } from 'expo-status-bar';
 import { ActivityIndicator, View } from 'react-native';
 import { Text, ToastProvider } from '../src/components/ui';
 import { AuthProvider, useAuth } from '../src/features/auth/AuthProvider';
+import { LevelUpOverlay } from '../src/features/gamification/LevelUpOverlay';
+import { XpWatcher } from '../src/features/gamification/XpWatcher';
 import { queryClient } from '../src/lib/queryClient';
 import { isSupabaseConfigured } from '../src/lib/supabase';
 import { fonts, useTheme } from '../src/theme';
@@ -33,32 +35,41 @@ function RootNavigator() {
   if (loading) return <Splash />;
 
   return (
-    <Stack screenOptions={{ headerShown: false }}>
-      <Stack.Protected guard={Boolean(session)}>
-        <Stack.Screen name="(tabs)" />
-        <Stack.Screen name="perfil" />
-        <Stack.Screen name="investimentos" />
-        <Stack.Screen name="relatorios" />
-        <Stack.Screen name="meta" />
-        <Stack.Screen
-          name="lancamento-form"
-          options={{
-            presentation: 'modal',
-            headerShown: true,
-            title: 'Lançamento',
-            headerStyle: { backgroundColor: colors.background },
-            headerTintColor: colors.text,
-            headerTitleStyle: { fontFamily: fonts.display, fontSize: 20 },
-            headerShadowVisible: false,
-            headerBackButtonDisplayMode: 'minimal',
-            contentStyle: { backgroundColor: colors.background },
-          }}
-        />
-      </Stack.Protected>
-      <Stack.Protected guard={!session}>
-        <Stack.Screen name="(auth)" />
-      </Stack.Protected>
-    </Stack>
+    <View style={{ flex: 1 }}>
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Protected guard={Boolean(session)}>
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="perfil" />
+          <Stack.Screen name="investimentos" />
+          <Stack.Screen name="relatorios" />
+          <Stack.Screen name="meta" />
+          <Stack.Screen name="xp" />
+          <Stack.Screen
+            name="lancamento-form"
+            options={{
+              presentation: 'modal',
+              headerShown: true,
+              title: 'Lançamento',
+              headerStyle: { backgroundColor: colors.background },
+              headerTintColor: colors.text,
+              headerTitleStyle: { fontFamily: fonts.display, fontSize: 20 },
+              headerShadowVisible: false,
+              headerBackButtonDisplayMode: 'minimal',
+              contentStyle: { backgroundColor: colors.background },
+            }}
+          />
+        </Stack.Protected>
+        <Stack.Protected guard={!session}>
+          <Stack.Screen name="(auth)" />
+        </Stack.Protected>
+      </Stack>
+      {session ? (
+        <>
+          <XpWatcher />
+          <LevelUpOverlay />
+        </>
+      ) : null}
+    </View>
   );
 }
 

@@ -27,6 +27,8 @@ import { CategoryBars } from '../../src/features/dashboard/CategoryBars';
 import { MetricTile } from '../../src/features/dashboard/MetricTile';
 import { NetWorthChart } from '../../src/features/dashboard/NetWorthChart';
 import { PeriodSelector, type PeriodState } from '../../src/features/dashboard/PeriodSelector';
+import { XpBar } from '../../src/features/gamification/XpBar';
+import { useLevelProgress } from '../../src/features/gamification/hooks';
 import { GoalsSummary } from '../../src/features/goals/GoalsSummary';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
 import { useInvestmentSummary } from '../../src/features/investments/hooks';
@@ -47,6 +49,7 @@ export default function InicioScreen() {
   const { data: accounts } = useAccounts();
   const { data: categories } = useCategories();
   const { totals } = useInvestmentSummary();
+  const { progress: levelInfo } = useLevelProgress();
 
   const categoryById = useMemo(
     () => new Map((categories ?? []).map((c) => [c.id, c])),
@@ -91,8 +94,14 @@ export default function InicioScreen() {
 
       <View style={styles.chips}>
         <Chip icon="flame-outline" tone="streak" label="0 dias" />
-        <Chip label="Nível 1 · Curioso Financeiro" />
+        <Chip
+          label={
+            levelInfo ? `Nível ${levelInfo.current.level} · ${levelInfo.current.name}` : 'Nível 1'
+          }
+        />
       </View>
+
+      <XpBar />
 
       <WeekStrip activeDays={[]} />
 

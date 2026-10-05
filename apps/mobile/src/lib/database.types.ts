@@ -137,6 +137,19 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"levels": {
+                  Row: {
+                    "level": number,"min_xp": number,"name": string
+                  }
+                  Insert: {
+                    "level": number,"min_xp": number,"name": string
+                  }
+                  Update: {
+                    "level"?: number,"min_xp"?: number,"name"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"profiles": {
                   Row: {
                     "avatar_url": string | null,"bio": string | null,"created_at": string,"currency": string,"display_name": string,"experience_level": string,"id": string,"onboarding_done": boolean,"timezone": string,"updated_at": string
@@ -212,13 +225,76 @@ isOneToOne: true
       referencedColumns: ["id"]
     }
                   ]
+                },"user_stats": {
+                  Row: {
+                    "celebrated_level": number,"level": number,"profile_id": string,"total_xp": number,"updated_at": string
+                  }
+                  Insert: {
+                    "celebrated_level"?: number,"level"?: number,"profile_id": string,"total_xp"?: number,"updated_at"?: string
+                  }
+                  Update: {
+                    "celebrated_level"?: number,"level"?: number,"profile_id"?: string,"total_xp"?: number,"updated_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_stats_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: true
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"xp_events": {
+                  Row: {
+                    "awarded_on": string,"created_at": string,"id": string,"idempotency_key": string,"profile_id": string,"ref_id": string | null,"source": string,"xp": number
+                  }
+                  Insert: {
+                    "awarded_on": string,"created_at"?: string,"id"?: string,"idempotency_key": string,"profile_id": string,"ref_id"?: string | null,"source": string,"xp": number
+                  }
+                  Update: {
+                    "awarded_on"?: string,"created_at"?: string,"id"?: string,"idempotency_key"?: string,"profile_id"?: string,"ref_id"?: string | null,"source"?: string,"xp"?: number
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "xp_events_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "xp_events_source_fkey"
+      columns: ["source"]
+isOneToOne: false
+      referencedRelation: "xp_rules"
+      referencedColumns: ["source"]
+    }
+                  ]
+                },"xp_rules": {
+                  Row: {
+                    "daily_cap": number | null,"description": string,"enabled": boolean,"label": string,"source": string,"xp": number
+                  }
+                  Insert: {
+                    "daily_cap"?: number | null,"description": string,"enabled"?: boolean,"label": string,"source": string,"xp": number
+                  }
+                  Update: {
+                    "daily_cap"?: number | null,"description"?: string,"enabled"?: boolean,"label"?: string,"source"?: string,"xp"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
                 }
           }
           Views: {
             [_ in never]: never
           }
           Functions: {
-            "seed_default_data":
+            "acknowledge_level":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"award_xp":
+{ Args: { "p_key": string,"p_profile": string,"p_ref": string,"p_source": string }; Returns: number
+                           },
+"seed_default_data":
 { Args: { "p_profile": string }; Returns: undefined
                            }
           }

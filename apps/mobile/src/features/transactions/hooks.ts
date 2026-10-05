@@ -1,6 +1,7 @@
 import type { Period } from '@lumioup/core';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useAuth } from '../auth/AuthProvider';
+import { useRefreshXp } from '../gamification/hooks';
 import {
   createTransaction,
   fetchAllTransactions,
@@ -36,6 +37,7 @@ export const useTransaction = (id: string | undefined) =>
 
 export function useCreateTransaction() {
   const qc = useQueryClient();
+  const refreshXp = useRefreshXp();
   const { session } = useAuth();
   return useMutation({
     mutationFn: (input: TransactionInput) => {
@@ -43,7 +45,7 @@ export function useCreateTransaction() {
       if (!profileId) throw new Error('Sessão ausente.');
       return createTransaction(profileId, input);
     },
-    onSuccess: () => qc.invalidateQueries({ queryKey: KEY }),
+    onSuccess: () => Promise.all([qc.invalidateQueries({ queryKey: KEY }), refreshXp()]),
   });
 }
 
