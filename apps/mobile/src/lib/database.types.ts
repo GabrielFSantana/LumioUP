@@ -24,6 +24,38 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"achievements": {
+                  Row: {
+                    "code": string,"color": string,"description": string,"enabled": boolean,"icon": string,"metric": string,"name": string,"sort_order": number,"threshold": number,"xp_reward": number
+                  }
+                  Insert: {
+                    "code": string,"color": string,"description": string,"enabled"?: boolean,"icon": string,"metric": string,"name": string,"sort_order"?: number,"threshold": number,"xp_reward": number
+                  }
+                  Update: {
+                    "code"?: string,"color"?: string,"description"?: string,"enabled"?: boolean,"icon"?: string,"metric"?: string,"name"?: string,"sort_order"?: number,"threshold"?: number,"xp_reward"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
+                },"activity_days": {
+                  Row: {
+                    "day": string,"profile_id": string
+                  }
+                  Insert: {
+                    "day": string,"profile_id": string
+                  }
+                  Update: {
+                    "day"?: string,"profile_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "activity_days_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"categories": {
                   Row: {
                     "color": string,"created_at": string,"icon": string,"id": string,"is_archived": boolean,"kind": string,"name": string,"profile_id": string,"sort_order": number,"updated_at": string
@@ -150,6 +182,19 @@ isOneToOne: false
                   Relationships: [
                     
                   ]
+                },"mission_templates": {
+                  Row: {
+                    "code": string,"description": string,"enabled": boolean,"metric": string,"period": string,"sort_order": number,"target": number,"title": string,"xp_reward": number
+                  }
+                  Insert: {
+                    "code": string,"description": string,"enabled"?: boolean,"metric": string,"period": string,"sort_order"?: number,"target": number,"title": string,"xp_reward": number
+                  }
+                  Update: {
+                    "code"?: string,"description"?: string,"enabled"?: boolean,"metric"?: string,"period"?: string,"sort_order"?: number,"target"?: number,"title"?: string,"xp_reward"?: number
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"profiles": {
                   Row: {
                     "avatar_url": string | null,"bio": string | null,"created_at": string,"currency": string,"display_name": string,"experience_level": string,"id": string,"onboarding_done": boolean,"timezone": string,"updated_at": string
@@ -206,6 +251,56 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"user_achievements": {
+                  Row: {
+                    "code": string,"profile_id": string,"unlocked_at": string
+                  }
+                  Insert: {
+                    "code": string,"profile_id": string,"unlocked_at"?: string
+                  }
+                  Update: {
+                    "code"?: string,"profile_id"?: string,"unlocked_at"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_achievements_code_fkey"
+      columns: ["code"]
+isOneToOne: false
+      referencedRelation: "achievements"
+      referencedColumns: ["code"]
+    },{
+      foreignKeyName: "user_achievements_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"user_missions": {
+                  Row: {
+                    "completed_at": string | null,"period_start": string,"profile_id": string,"progress": number,"template_code": string
+                  }
+                  Insert: {
+                    "completed_at"?: string | null,"period_start": string,"profile_id": string,"progress"?: number,"template_code": string
+                  }
+                  Update: {
+                    "completed_at"?: string | null,"period_start"?: string,"profile_id"?: string,"progress"?: number,"template_code"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "user_missions_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "user_missions_template_code_fkey"
+      columns: ["template_code"]
+isOneToOne: false
+      referencedRelation: "mission_templates"
+      referencedColumns: ["code"]
+    }
+                  ]
                 },"user_settings": {
                   Row: {
                     "biometric_lock": boolean,"created_at": string,"profile_id": string,"share_amounts_with_clubs": boolean,"show_in_club_ranking": boolean,"updated_at": string
@@ -227,13 +322,13 @@ isOneToOne: true
                   ]
                 },"user_stats": {
                   Row: {
-                    "celebrated_level": number,"level": number,"profile_id": string,"total_xp": number,"updated_at": string
+                    "best_streak": number,"celebrated_level": number,"current_streak": number,"last_active_on": string | null,"level": number,"profile_id": string,"total_xp": number,"updated_at": string
                   }
                   Insert: {
-                    "celebrated_level"?: number,"level"?: number,"profile_id": string,"total_xp"?: number,"updated_at"?: string
+                    "best_streak"?: number,"celebrated_level"?: number,"current_streak"?: number,"last_active_on"?: string | null,"level"?: number,"profile_id": string,"total_xp"?: number,"updated_at"?: string
                   }
                   Update: {
-                    "celebrated_level"?: number,"level"?: number,"profile_id"?: string,"total_xp"?: number,"updated_at"?: string
+                    "best_streak"?: number,"celebrated_level"?: number,"current_streak"?: number,"last_active_on"?: string | null,"level"?: number,"profile_id"?: string,"total_xp"?: number,"updated_at"?: string
                   }
                   Relationships: [
                     {
@@ -271,13 +366,13 @@ isOneToOne: false
                   ]
                 },"xp_rules": {
                   Row: {
-                    "daily_cap": number | null,"description": string,"enabled": boolean,"label": string,"source": string,"xp": number
+                    "daily_cap": number | null,"description": string,"enabled": boolean,"label": string,"source": string,"variable": boolean,"xp": number
                   }
                   Insert: {
-                    "daily_cap"?: number | null,"description": string,"enabled"?: boolean,"label": string,"source": string,"xp": number
+                    "daily_cap"?: number | null,"description": string,"enabled"?: boolean,"label": string,"source": string,"variable"?: boolean,"xp": number
                   }
                   Update: {
-                    "daily_cap"?: number | null,"description"?: string,"enabled"?: boolean,"label"?: string,"source"?: string,"xp"?: number
+                    "daily_cap"?: number | null,"description"?: string,"enabled"?: boolean,"label"?: string,"source"?: string,"variable"?: boolean,"xp"?: number
                   }
                   Relationships: [
                     
@@ -292,7 +387,19 @@ isOneToOne: false
 { Args: Record<PropertyKey, never>; Returns: undefined
                            },
 "award_xp":
-{ Args: { "p_key": string,"p_profile": string,"p_ref": string,"p_source": string }; Returns: number
+{ Args: { "p_key": string,"p_profile": string,"p_ref": string,"p_source": string,"p_xp"?: number }; Returns: number
+                           },
+"bump_missions":
+{ Args: { "p_metric": string,"p_n"?: number,"p_profile": string }; Returns: undefined
+                           },
+"check_achievements":
+{ Args: { "p_profile": string }; Returns: undefined
+                           },
+"local_today":
+{ Args: { "p_profile": string }; Returns: string
+                           },
+"mark_active_day":
+{ Args: { "p_profile": string }; Returns: undefined
                            },
 "seed_default_data":
 { Args: { "p_profile": string }; Returns: undefined

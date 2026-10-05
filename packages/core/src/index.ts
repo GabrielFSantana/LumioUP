@@ -4,3 +4,4 @@ export * from './auth/validation';
 export * from './catalog/catalog';
 export * from './goals/goals';
 export * from './gamification/levels';
+export * from './gamification/progress';

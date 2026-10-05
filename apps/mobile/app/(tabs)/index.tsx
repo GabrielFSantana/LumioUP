@@ -17,7 +17,6 @@ import {
   EmptyState,
   Mascot,
   MenuRow,
-  ProgressBar,
   Screen,
   Text,
 } from '../../src/components/ui';
@@ -27,8 +26,13 @@ import { CategoryBars } from '../../src/features/dashboard/CategoryBars';
 import { MetricTile } from '../../src/features/dashboard/MetricTile';
 import { NetWorthChart } from '../../src/features/dashboard/NetWorthChart';
 import { PeriodSelector, type PeriodState } from '../../src/features/dashboard/PeriodSelector';
+import { MissionsCard } from '../../src/features/gamification/MissionsCard';
 import { XpBar } from '../../src/features/gamification/XpBar';
-import { useLevelProgress } from '../../src/features/gamification/hooks';
+import {
+  useLevelProgress,
+  useStreak,
+  useWeekActiveDays,
+} from '../../src/features/gamification/hooks';
 import { GoalsSummary } from '../../src/features/goals/GoalsSummary';
 import { WeekStrip } from '../../src/features/home/WeekStrip';
 import { useInvestmentSummary } from '../../src/features/investments/hooks';
@@ -50,6 +54,8 @@ export default function InicioScreen() {
   const { data: categories } = useCategories();
   const { totals } = useInvestmentSummary();
   const { progress: levelInfo } = useLevelProgress();
+  const streak = useStreak();
+  const weekActive = useWeekActiveDays();
 
   const categoryById = useMemo(
     () => new Map((categories ?? []).map((c) => [c.id, c])),
@@ -93,7 +99,11 @@ export default function InicioScreen() {
       </View>
 
       <View style={styles.chips}>
-        <Chip icon="flame-outline" tone="streak" label="0 dias" />
+        <Chip
+          icon="flame-outline"
+          tone="streak"
+          label={`${streak.days} ${streak.days === 1 ? 'dia' : 'dias'}`}
+        />
         <Chip
           label={
             levelInfo ? `Nível ${levelInfo.current.level} · ${levelInfo.current.name}` : 'Nível 1'
@@ -103,7 +113,7 @@ export default function InicioScreen() {
 
       <XpBar />
 
-      <WeekStrip activeDays={[]} />
+      <WeekStrip activeDays={weekActive} />
 
       <PeriodSelector state={period} onChange={setPeriod} />
 
@@ -201,18 +211,7 @@ export default function InicioScreen() {
 
       <GoalsSummary />
 
-      <Card>
-        <View style={styles.rowBetween}>
-          <Text variant="heading">Missão do dia</Text>
-          <View style={[styles.pill, { backgroundColor: colors.primarySoft }]}>
-            <Text variant="caption" tone="text">
-              +10 XP
-            </Text>
-          </View>
-        </View>
-        <Text variant="caption">Registre seu primeiro lançamento</Text>
-        <ProgressBar percent={0} label="Progresso da missão do dia" />
-      </Card>
+      <MissionsCard />
 
       <MenuRow
         title="Relatórios"
@@ -251,7 +250,6 @@ const styles = StyleSheet.create({
   },
   pills: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm, marginTop: spacing.sm },
   pill: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: radius.pill },
-  rowBetween: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   insight: { flexDirection: 'row', gap: spacing.sm, alignItems: 'flex-start' },
   tiles: { flexDirection: 'row', flexWrap: 'wrap', gap: spacing.sm },
 });

@@ -1,6 +1,6 @@
 # Gamificação do LumioUP
 
-Status: Etapa 10 (XP e níveis). Sequência, conquistas e missões chegam na Etapa 11.
+Status: Etapas 10 (XP e níveis) e 11 (sequência, missões e conquistas).
 
 ## Princípios
 
@@ -55,3 +55,42 @@ Os nomes não implicam patrimônio ou conhecimento de mercado; são etapas de h�
 `user_stats.celebrated_level` guarda o último nível já comemorado. Quando `level > celebrated_level`
 o app mostra a tela de subida de nível uma vez e chama `acknowledge_level()` ao continuar.
 A tela respeita "reduzir movimento": não há animação.
+
+## Sequência (Etapa 11)
+
+- **Dia organizado** = dia em que o usuário **faz** uma ação (registrar lançamento, criar meta ou guardar
+  para uma meta), no fuso do perfil. A data do lançamento não importa: lançar datas antigas não estende a sequência.
+- Cada dia organizado rende **+5 XP** (uma vez por dia).
+- Se o último dia ativo foi ontem, a sequência está "em risco" (continua se houver atividade hoje);
+  se passou mais de um dia, ela recomeça em 1 na próxima atividade. O **recorde** é sempre mantido.
+- Mensagens neutras: "Sua sequência recomeça hoje. Quando quiser!". Nunca culpa, nunca alarme.
+- Ideia futura: **dia de descanso** (uma folga por semana sem quebrar a sequência), para reduzir a ansiedade.
+
+## Missões
+
+Modelos em `mission_templates` (ajustáveis sem novo app), progresso em `user_missions` por período
+(dia ou semana de domingo a sábado, no fuso do usuário). Cada missão rende XP **uma vez por período**.
+
+| Missão | Período | Alvo | XP |
+|---|---|---|---|
+| Registre 2 lançamentos | diária | 2 | 15 |
+| Guarde para uma meta | diária | 1 | 10 |
+| Cinco dias organizados | semanal | 5 dias | 40 |
+| Dez lançamentos na semana | semanal | 10 | 30 |
+
+Anti-abuso: só contam lançamentos e contribuições **que renderam XP** (distintos e dentro do limite diário).
+
+## Conquistas
+
+Catálogo em `achievements`, desbloqueio avaliado no servidor depois de cada ação (e repetido até 3 vezes,
+porque o XP de uma conquista pode subir o nível e liberar outra). Cada uma rende XP uma única vez.
+
+Primeiro passo (1 lançamento), Pegando o ritmo (10), Organização em dia (50), Com um objetivo (1ª meta),
+Guardando (1ª contribuição), Meta cumprida, Primeiro aporte, Três dias seguidos, Semana organizada (7 dias),
+Mês inteiro (30 dias) e Planejador (nível 4). Os textos descrevem ações, sem nenhuma recomendação.
+
+## Nada disso é escrito pelo app
+
+`activity_days`, `user_missions`, `user_achievements` e as colunas de sequência de `user_stats` são só de leitura
+para os usuários; as funções que os alteram não têm permissão de execução para o app (testado em
+`supabase/tests/database/gamification.test.sql`).

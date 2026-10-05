@@ -2,9 +2,13 @@ import { Ionicons } from '@expo/vector-icons';
 import { describeXpGain, formatBrDate } from '@lumioup/core';
 import { StyleSheet, View } from 'react-native';
 import { Card, Chip, EmptyState, Mascot, ProgressBar, Screen, Text } from '../../src/components/ui';
+import { AchievementsGrid } from '../../src/features/gamification/AchievementsGrid';
+import { MissionsCard } from '../../src/features/gamification/MissionsCard';
 import {
+  useAchievements,
   useLevelProgress,
   useLevels,
+  useStreak,
   useXpEvents,
   useXpRules,
 } from '../../src/features/gamification/hooks';
@@ -16,6 +20,8 @@ export default function JornadaScreen() {
   const { data: levels } = useLevels();
   const { data: rules } = useXpRules();
   const { data: events } = useXpEvents(20);
+  const streak = useStreak();
+  const achievements = useAchievements();
 
   const labelBySource = new Map((rules ?? []).map((r) => [r.source, r.label]));
   const currentLevel = progress?.current.level ?? 1;
@@ -42,6 +48,29 @@ export default function JornadaScreen() {
       ) : null}
 
       <Card>
+        <View style={styles.top}>
+          <Ionicons name="flame-outline" size={40} color={colors.streak} />
+          <View style={{ flex: 1 }}>
+            <Text variant="title">{`${streak.days} ${streak.days === 1 ? 'dia' : 'dias'}`}</Text>
+            <Text variant="caption">{`Sua melhor sequência: ${streak.best} ${streak.best === 1 ? 'dia' : 'dias'}`}</Text>
+          </View>
+        </View>
+        <Text>{streak.message}</Text>
+      </Card>
+
+      <MissionsCard />
+
+      <Card>
+        <View style={styles.rule}>
+          <Text variant="heading" style={{ flex: 1 }}>
+            Conquistas
+          </Text>
+          <Chip label={`${achievements.summary.unlocked} de ${achievements.summary.total}`} />
+        </View>
+        <AchievementsGrid items={achievements.items} />
+      </Card>
+
+      <Card>
         <Text variant="heading">Como ganhar XP</Text>
         <Text variant="caption">
           O XP vem das suas ações, nunca de valores em reais. Quanto você ganha, gasta ou investe
@@ -57,7 +86,7 @@ export default function JornadaScreen() {
                   : rule.description}
               </Text>
             </View>
-            <Chip label={describeXpGain(rule.xp)} />
+            <Chip label={rule.variable ? 'Varia' : describeXpGain(rule.xp)} />
           </View>
         ))}
       </Card>
