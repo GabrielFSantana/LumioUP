@@ -52,6 +52,13 @@ export default function PerfilScreen() {
         onPress={() => router.push('/perfil/notificacoes')}
       />
 
+      <MenuRow
+        title="Privacidade e dados"
+        subtitle="Exportar meus dados e excluir a conta"
+        leading={<CategoryBadge icon="shield-checkmark-outline" color="slate" />}
+        onPress={() => router.push('/perfil/privacidade')}
+      />
+
       <Card>
         <Text variant="heading">Privacidade nos clubes</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>

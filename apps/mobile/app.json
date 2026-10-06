@@ -27,7 +27,13 @@
       "expo-router",
       "expo-secure-store",
       "expo-font",
-      ["expo-notifications", { "color": "#FFC400" }]
+      [
+        "expo-notifications",
+        {
+          "color": "#FFC400"
+        }
+      ],
+      "expo-sharing"
     ]
   }
 }

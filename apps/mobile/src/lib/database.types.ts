@@ -682,6 +682,12 @@ isOneToOne: false
 "delete_club":
 { Args: { "p_club": string }; Returns: undefined
                            },
+"delete_my_account":
+{ Args: Record<PropertyKey, never>; Returns: undefined
+                           },
+"export_my_data":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
 "generate_invite_code":
 { Args: Record<PropertyKey, never>; Returns: string
                            },
