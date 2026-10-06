@@ -101,7 +101,7 @@ export default function InicioScreen() {
       <View style={styles.chips}>
         <Chip
           icon="flame-outline"
-          tone="streak"
+          tone="streakInk"
           label={`${streak.days} ${streak.days === 1 ? 'dia' : 'dias'}`}
         />
         <Chip
@@ -154,7 +154,7 @@ export default function InicioScreen() {
       ) : null}
 
       <View style={styles.tiles}>
-        <MetricTile label="Investido" value={formatBRL(summary.invested)} tone="investment" />
+        <MetricTile label="Investido" value={formatBRL(summary.invested)} tone="investmentInk" />
         <MetricTile
           label="Lucro e perda"
           value={signed(summary.profitLoss)}

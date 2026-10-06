@@ -252,7 +252,7 @@ export default function RelatoriosScreen() {
               <MetricTile
                 label="Aportes na janela"
                 value={formatBRL(report.windowTotals.invested)}
-                tone="investment"
+                tone="investmentInk"
               />
               <MetricTile
                 label="Lucro e perda"

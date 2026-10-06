@@ -1,6 +1,6 @@
 # ADR 0002 — Lembretes locais no celular, sem push remoto (por enquanto)
 
-Data: 2026-10-07 · Status: aceita (Etapa 15)
+Data: 2026-10-06 · Status: aceita (Etapa 15)
 
 ## Contexto
 

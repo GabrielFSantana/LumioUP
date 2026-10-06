@@ -218,7 +218,7 @@ export default function LancamentosScreen() {
                 trailing={sign === 1 ? `+ ${amount}` : sign === -1 ? `- ${amount}` : amount}
                 trailingTone={
                   !movesCash
-                    ? 'investment'
+                    ? 'investmentInk'
                     : sign === 1
                       ? 'incomeInk'
                       : sign === -1

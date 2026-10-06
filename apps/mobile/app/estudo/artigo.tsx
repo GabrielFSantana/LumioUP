@@ -74,7 +74,7 @@ export default function ArtigoScreen() {
       </Card>
 
       {done ? (
-        <Chip label="Você já leu este artigo" icon="checkmark-circle" tone="income" />
+        <Chip label="Você já leu este artigo" icon="checkmark-circle" tone="incomeInk" />
       ) : (
         <Button
           label={complete.isPending ? 'Salvando…' : 'Marcar como lido'}

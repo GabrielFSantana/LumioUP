@@ -10,3 +10,4 @@ export * from './challenges/challenges';
 export * from './education/education';
 export * from './notifications/notifications';
 export * from './privacy/privacy';
+export * from './a11y/contrast';

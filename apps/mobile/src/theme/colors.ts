@@ -22,10 +22,14 @@ export interface Palette {
   expenseSoft: string;
   expenseInk: string;
   investment: string;
+  /** Versão para TEXTO (contraste AA); `investment` fica para preenchimentos e ícones. */
+  investmentInk: string;
   investmentSoft: string;
   goal: string;
+  goalInk: string;
   goalSoft: string;
   streak: string;
+  streakInk: string;
   danger: string;
   /** Cartão de destaque (saldo). */
   heroBackground: string;
@@ -50,10 +54,13 @@ export const lightPalette: Palette = {
   expenseSoft: '#FFE0DA',
   expenseInk: '#9A2E1B',
   investment: '#2D7DF6',
+  investmentInk: '#1B5FCC',
   investmentSoft: '#DCE9FF',
   goal: '#0E9E99',
+  goalInk: '#0A726D',
   goalSoft: '#D2F3F1',
   streak: '#E07B00',
+  streakInk: '#9A5200',
   danger: '#B42318',
   heroBackground: '#14213D',
   heroText: '#FFF8E7',
@@ -77,10 +84,13 @@ export const darkPalette: Palette = {
   expenseSoft: '#3F1F1B',
   expenseInk: '#FFB3A5',
   investment: '#6AAEFF',
+  investmentInk: '#6AAEFF',
   investmentSoft: '#17294A',
   goal: '#3FD4CE',
+  goalInk: '#3FD4CE',
   goalSoft: '#10373A',
   streak: '#FF9F1C',
+  streakInk: '#FF9F1C',
   danger: '#FF8A80',
   heroBackground: '#FFC400',
   heroText: '#14213D',

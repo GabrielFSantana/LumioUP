@@ -139,7 +139,7 @@ export default function DesafioScreen() {
                 {row.isSelf ? `${row.displayName} (você)` : row.displayName}
               </Text>
               {row.completed ? (
-                <Chip label="Concluído" icon="checkmark-circle" tone="income" />
+                <Chip label="Concluído" icon="checkmark-circle" tone="incomeInk" />
               ) : (
                 <Text variant="bodyBold">{`${row.progressPct}%`}</Text>
               )}

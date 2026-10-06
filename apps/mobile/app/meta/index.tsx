@@ -139,7 +139,7 @@ export default function MetaScreen() {
               view.deadline === 'overdue'
                 ? 'danger'
                 : view.deadline === 'soon'
-                  ? 'streak'
+                  ? 'streakInk'
                   : 'textMuted'
             }
             label={

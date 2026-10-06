@@ -86,7 +86,7 @@ export default function AprenderScreen() {
                 {track.data.title}
               </Text>
               {progress.completed ? (
-                <Chip label="Concluída" icon="checkmark-circle" tone="income" />
+                <Chip label="Concluída" icon="checkmark-circle" tone="incomeInk" />
               ) : null}
             </View>
             <Text variant="caption">{track.data.description}</Text>
@@ -116,7 +116,7 @@ export default function AprenderScreen() {
                   passed.has(slug) ? ' · quiz feito' : ''
                 }`}
                 trailing={done ? 'Lido' : undefined}
-                trailingTone={done ? 'income' : undefined}
+                trailingTone={done ? 'incomeInk' : undefined}
                 onPress={() => open(slug)}
                 leading={
                   done ? (

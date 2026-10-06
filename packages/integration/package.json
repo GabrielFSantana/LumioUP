@@ -1,0 +1,12 @@
+{
+  "name": "@lumioup/integration",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test:integration": "jest",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "^2.117.2"
+  }
+}

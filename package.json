@@ -14,7 +14,8 @@
     "db:stop": "npx supabase stop",
     "db:test": "npx supabase test db",
     "db:types": "npx supabase gen types typescript --local --schema public > apps/mobile/src/lib/database.types.ts",
-    "db:reset": "npx supabase db reset"
+    "db:reset": "npx supabase db reset",
+    "test:integration": "npm run test:integration --workspace @lumioup/integration"
   },
   "devDependencies": {
     "@eslint/js": "^9.0.0",
