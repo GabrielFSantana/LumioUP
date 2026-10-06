@@ -30,7 +30,15 @@ import {
 
 const STATS_KEY = ['user-stats'] as const;
 const EVENTS_KEY = ['xp-events'] as const;
-const PROGRESS_KEYS = [['activity-days'], ['user-missions'], ['unlocked-achievements']] as const;
+const PROGRESS_KEYS = [
+  ['activity-days'],
+  ['user-missions'],
+  ['unlocked-achievements'],
+  // Lançamentos e contribuições também andam o progresso dos desafios e o ranking dos clubes.
+  ['challenges'],
+  ['challenge-standings'],
+  ['club-ranking'],
+] as const;
 const DAY_MS = 24 * 60 * 60 * 1000;
 
 /** Níveis e regras são configuração: mudam raramente, então ficam em cache por um dia. */

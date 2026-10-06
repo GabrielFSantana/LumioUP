@@ -79,6 +79,58 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"challenge_participants": {
+                  Row: {
+                    "challenge_id": string,"completed_at": string | null,"joined_on": string,"profile_id": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "challenge_id": string,"completed_at"?: string | null,"joined_on": string,"profile_id": string
+                  }
+                  Update: {
+                    "challenge_id"?: string,"completed_at"?: string | null,"joined_on"?: string,"profile_id"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "challenge_participants_challenge_id_fkey"
+      columns: ["challenge_id"]
+isOneToOne: false
+      referencedRelation: "challenges"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "challenge_participants_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"challenges": {
+                  Row: {
+                    "club_id": string,"created_at": string,"created_by": string | null,"ends_on": string,"id": string,"kind": string,"starts_on": string,"target": number,"title": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "club_id": string,"created_at"?: string,"created_by"?: string | null,"ends_on": string,"id"?: string,"kind": string,"starts_on": string,"target": number,"title": string
+                  }
+                  Update: {
+                    "club_id"?: string,"created_at"?: string,"created_by"?: string | null,"ends_on"?: string,"id"?: string,"kind"?: string,"starts_on"?: string,"target"?: number,"title"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "challenges_club_id_fkey"
+      columns: ["club_id"]
+isOneToOne: false
+      referencedRelation: "clubs"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "challenges_created_by_fkey"
+      columns: ["created_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"club_join_attempts": {
                   Row: {
                     "attempted_at": string,"id": number,"profile_id": string
@@ -479,14 +531,33 @@ isOneToOne: false
 "bump_missions":
 { Args: { "p_metric": string,"p_n"?: number,"p_profile": string }; Returns: undefined
                            },
+"challenge_count":
+{ Args: { "p_challenge": string,"p_profile": string }; Returns: number
+                           },
+"challenge_standings":
+{ Args: { "p_challenge": string }; Returns: {
+              "action_count": number,"completed": boolean,"display_name": string,"is_self": boolean,"profile_id": string,"progress_pct": number
+            }[]
+                           },
 "check_achievements":
 { Args: { "p_profile": string }; Returns: undefined
+                           },
+"club_ranking":
+{ Args: { "p_club": string,"p_period": string }; Returns: {
+              "achievements": number,"current_streak": number,"display_name": string,"is_self": boolean,"level": number,"missions_completed": number,"profile_id": string,"rank": number,"xp": number
+            }[]
                            },
 "club_role_of":
 { Args: { "p_club": string }; Returns: string
                            },
+"create_challenge":
+{ Args: { "p_club": string,"p_ends_on": string,"p_kind": string,"p_starts_on": string,"p_target": number,"p_title": string }; Returns: string
+                           },
 "create_club":
 { Args: { "p_description"?: string,"p_name": string }; Returns: string
+                           },
+"delete_challenge":
+{ Args: { "p_challenge": string }; Returns: undefined
                            },
 "delete_club":
 { Args: { "p_club": string }; Returns: undefined
@@ -497,11 +568,22 @@ isOneToOne: false
 "is_club_member":
 { Args: { "p_club": string }; Returns: boolean
                            },
+"join_challenge":
+{ Args: { "p_challenge": string }; Returns: undefined
+                           },
 "join_club":
 { Args: { "p_code": string }; Returns: string
                            },
+"leave_challenge":
+{ Args: { "p_challenge": string }; Returns: undefined
+                           },
 "leave_club":
 { Args: { "p_club": string }; Returns: undefined
+                           },
+"list_challenges":
+{ Args: { "p_club": string }; Returns: {
+              "completed_count": number,"created_by": string,"ends_on": string,"id": string,"joined": boolean,"kind": string,"my_completed_at": string,"my_count": number,"participant_count": number,"starts_on": string,"status": string,"target": number,"title": string
+            }[]
                            },
 "list_club_members":
 { Args: { "p_club": string }; Returns: {
@@ -526,6 +608,9 @@ isOneToOne: false
 { Args: { "p_code": string }; Returns: {
               "club_id": string,"invites_enabled": boolean,"is_full": boolean,"max_members": number,"member_count": number,"name": string
             }[]
+                           },
+"refresh_challenges":
+{ Args: { "p_profile": string }; Returns: undefined
                            },
 "regenerate_invite_code":
 { Args: { "p_club": string }; Returns: string

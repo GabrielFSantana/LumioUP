@@ -17,6 +17,9 @@ export default function ClubeLayout() {
       <Stack.Screen name="index" options={{ title: 'Clube' }} />
       <Stack.Screen name="form" options={{ title: 'Clube' }} />
       <Stack.Screen name="entrar" options={{ title: 'Entrar em um clube' }} />
+      <Stack.Screen name="desafio" options={{ title: 'Desafio' }} />
+      <Stack.Screen name="desafio-form" options={{ title: 'Novo desafio' }} />
+      <Stack.Screen name="ranking" options={{ title: 'Ranking' }} />
     </Stack>
   );
 }

@@ -22,6 +22,7 @@ Status: Etapas 10 (XP e níveis) e 11 (sequência, missões e conquistas).
 | Criar meta | 20 | 1 |
 | Guardar para uma meta | 5 | 2 |
 | Concluir uma meta | 50 | uma vez por meta |
+| Concluir um desafio do clube | 40 | 2 |
 
 As regras ficam no banco e podem ser ajustadas sem publicar um novo app. O app mostra essas regras na tela Jornada.
 Próximas fontes: conteúdos e questionários (Etapa 14), revisão semanal e missões (Etapa 11).
@@ -88,6 +89,22 @@ porque o XP de uma conquista pode subir o nível e liberar outra). Cada uma rend
 Primeiro passo (1 lançamento), Pegando o ritmo (10), Organização em dia (50), Com um objetivo (1ª meta),
 Guardando (1ª contribuição), Meta cumprida, Primeiro aporte, Três dias seguidos, Semana organizada (7 dias),
 Mês inteiro (30 dias) e Planejador (nível 4). Os textos descrevem ações, sem nenhuma recomendação.
+
+## Desafios e ranking dos clubes (Etapa 13)
+
+Regra `challenge_done`: 40 XP, no máximo 2 por dia, uma vez por desafio.
+
+- **Só ações, nunca valores em reais.** Tipos: dias organizados (`activity_days`), lançamentos
+  registrados e contribuições em metas (contados a partir do `xp_events` já concedido, então valem os mesmos
+  limites diários: até 5 lançamentos e 2 contribuições por dia). Desafios de "economizar R$ X" ou
+  "reduzir uma categoria" ficaram de fora de propósito: exigiriam expor ou comparar valores.
+- **Progresso calculado no servidor** (`challenge_count`), contando só o que foi feito a partir do dia em que a
+  pessoa entrou. A conclusão e o XP saem de gatilhos em `activity_days` e `xp_events`; o app só lê.
+- **Contra abuso:** só dono/admin criam; duração de 1 a 90 dias; metas mínimas por tipo; no máximo 5 desafios
+  ativos ou marcados por clube; o XP só vale em clube com 2+ membros.
+- **Ranking** (`club_ranking`): XP da semana (desde domingo), do mês ou geral, mais sequência, missões e
+  conquistas. Quem desligou "Aparecer no ranking dos clubes" não aparece para os outros, nem no ranking nem no
+  placar do desafio; só vê a própria linha, sem posição. Nenhuma coluna monetária existe nessas tabelas.
 
 ## Nada disso é escrito pelo app
 

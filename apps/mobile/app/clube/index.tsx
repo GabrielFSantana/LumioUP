@@ -13,6 +13,7 @@ import { useLocalSearchParams, useRouter } from 'expo-router';
 import { Share, StyleSheet, Switch, View } from 'react-native';
 import { Button, Card, Chip, ConfirmButton, Screen, Text, useToast } from '../../src/components/ui';
 import { useAuth } from '../../src/features/auth/AuthProvider';
+import { ChallengesSection } from '../../src/features/challenges/ChallengesSection';
 import { friendlyClubError, type ClubMember } from '../../src/features/clubs/api';
 import {
   useClubMembers,
@@ -191,6 +192,14 @@ export default function ClubeScreen() {
           </>
         ) : null}
       </Card>
+
+      <Button
+        label="Ver ranking"
+        variant="secondary"
+        onPress={() => router.push({ pathname: '/clube/ranking', params: { id: club.clubId } })}
+      />
+
+      <ChallengesSection club={club} />
 
       <View style={{ gap: spacing.md }}>
         <Text variant="heading">Membros</Text>
