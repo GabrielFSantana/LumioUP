@@ -5,3 +5,4 @@ export * from './catalog/catalog';
 export * from './goals/goals';
 export * from './gamification/levels';
 export * from './gamification/progress';
+export * from './clubs/clubs';

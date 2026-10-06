@@ -1,6 +1,7 @@
 export { Button } from './Button';
 export { Card } from './Card';
 export { CATEGORY_ICONS, CategoryBadge } from './CategoryBadge';
+export { ConfirmButton } from './ConfirmButton';
 export { Chip } from './Chip';
 export { DateField } from './DateField';
 export { EmptyState } from './EmptyState';
