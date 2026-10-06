@@ -45,6 +45,7 @@ function RootNavigator() {
           <Stack.Screen name="meta" />
           <Stack.Screen name="xp" />
           <Stack.Screen name="clube" />
+          <Stack.Screen name="estudo" />
           <Stack.Screen
             name="lancamento-form"
             options={{

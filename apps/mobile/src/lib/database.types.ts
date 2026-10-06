@@ -59,6 +59,46 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"article_progress": {
+                  Row: {
+                    "article_slug": string,"completed_at": string | null,"profile_id": string,"quiz_best_pct": number | null,"quiz_passed_at": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "article_slug": string,"completed_at"?: string | null,"profile_id": string,"quiz_best_pct"?: number | null,"quiz_passed_at"?: string | null
+                  }
+                  Update: {
+                    "article_slug"?: string,"completed_at"?: string | null,"profile_id"?: string,"quiz_best_pct"?: number | null,"quiz_passed_at"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "article_progress_article_slug_fkey"
+      columns: ["article_slug"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["slug"]
+    },{
+      foreignKeyName: "article_progress_profile_id_fkey"
+      columns: ["profile_id"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"articles": {
+                  Row: {
+                    "body": string,"enabled": boolean,"level": string,"read_minutes": number,"slug": string,"sort_order": number,"summary": string,"title": string,"topic": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "body": string,"enabled"?: boolean,"level": string,"read_minutes": number,"slug": string,"sort_order"?: number,"summary": string,"title": string,"topic": string
+                  }
+                  Update: {
+                    "body"?: string,"enabled"?: boolean,"level"?: string,"read_minutes"?: number,"slug"?: string,"sort_order"?: number,"summary"?: string,"title"?: string,"topic"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"categories": {
                   Row: {
                     "color": string,"created_at": string,"icon": string,"id": string,"is_archived": boolean,"kind": string,"name": string,"profile_id": string,"sort_order": number,"updated_at": string
@@ -217,6 +257,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"glossary_terms": {
+                  Row: {
+                    "definition": string,"sort_order": number,"term": string,"topic": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "definition": string,"sort_order"?: number,"term": string,"topic": string
+                  }
+                  Update: {
+                    "definition"?: string,"sort_order"?: number,"term"?: string,"topic"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"goal_contributions": {
                   Row: {
                     "amount_cents": number,"created_at": string,"deleted_at": string | null,"goal_id": string,"id": string,"note": string | null,"occurred_on": string,"profile_id": string,"updated_at": string
@@ -295,6 +349,20 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"learning_tracks": {
+                  Row: {
+                    "description": string,"slug": string,"sort_order": number,"title": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "description": string,"slug": string,"sort_order"?: number,"title": string
+                  }
+                  Update: {
+                    "description"?: string,"slug"?: string,"sort_order"?: number,"title"?: string
+                  }
+                  Relationships: [
+                    
+                  ]
                 },"levels": {
                   Row: {
                     "level": number,"min_xp": number,"name": string
@@ -336,6 +404,52 @@ isOneToOne: false
                   }
                   Relationships: [
                     
+                  ]
+                },"quiz_questions": {
+                  Row: {
+                    "article_slug": string,"correct_index": number,"explanation": string,"id": string,"options": (string)[],"position": number,"prompt": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "article_slug": string,"correct_index": number,"explanation": string,"id"?: string,"options": (string)[],"position": number,"prompt": string
+                  }
+                  Update: {
+                    "article_slug"?: string,"correct_index"?: number,"explanation"?: string,"id"?: string,"options"?: (string)[],"position"?: number,"prompt"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "quiz_questions_article_slug_fkey"
+      columns: ["article_slug"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["slug"]
+    }
+                  ]
+                },"track_items": {
+                  Row: {
+                    "article_slug": string,"position": number,"track_slug": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "article_slug": string,"position": number,"track_slug": string
+                  }
+                  Update: {
+                    "article_slug"?: string,"position"?: number,"track_slug"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "track_items_article_slug_fkey"
+      columns: ["article_slug"]
+isOneToOne: false
+      referencedRelation: "articles"
+      referencedColumns: ["slug"]
+    },{
+      foreignKeyName: "track_items_track_slug_fkey"
+      columns: ["track_slug"]
+isOneToOne: false
+      referencedRelation: "learning_tracks"
+      referencedColumns: ["slug"]
+    }
                   ]
                 },"transactions": {
                   Row: {
@@ -542,6 +656,9 @@ isOneToOne: false
 "check_achievements":
 { Args: { "p_profile": string }; Returns: undefined
                            },
+"check_tracks":
+{ Args: { "p_profile": string }; Returns: undefined
+                           },
 "club_ranking":
 { Args: { "p_club": string,"p_period": string }; Returns: {
               "achievements": number,"current_streak": number,"display_name": string,"is_self": boolean,"level": number,"missions_completed": number,"profile_id": string,"rank": number,"xp": number
@@ -549,6 +666,9 @@ isOneToOne: false
                            },
 "club_role_of":
 { Args: { "p_club": string }; Returns: string
+                           },
+"complete_article":
+{ Args: { "p_article": string }; Returns: undefined
                            },
 "create_challenge":
 { Args: { "p_club": string,"p_ends_on": string,"p_kind": string,"p_starts_on": string,"p_target": number,"p_title": string }; Returns: string
@@ -609,6 +729,11 @@ isOneToOne: false
               "club_id": string,"invites_enabled": boolean,"is_full": boolean,"max_members": number,"member_count": number,"name": string
             }[]
                            },
+"recommended_articles":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "article_slug": string,"reason": string
+            }[]
+                           },
 "refresh_challenges":
 { Args: { "p_profile": string }; Returns: undefined
                            },
@@ -623,6 +748,11 @@ isOneToOne: false
                            },
 "set_member_role":
 { Args: { "p_club": string,"p_profile": string,"p_role": string }; Returns: undefined
+                           },
+"submit_quiz":
+{ Args: { "p_answers": (number)[],"p_article": string }; Returns: {
+              "correct_index": number,"explanation": string,"is_correct": boolean,"question_position": number
+            }[]
                            },
 "transfer_ownership":
 { Args: { "p_club": string,"p_profile": string }; Returns: undefined

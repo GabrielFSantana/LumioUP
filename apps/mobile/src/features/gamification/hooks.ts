@@ -38,6 +38,8 @@ const PROGRESS_KEYS = [
   ['challenges'],
   ['challenge-standings'],
   ['club-ranking'],
+  // As sugestões de leitura partem dos registros recentes.
+  ['education-recommended'],
 ] as const;
 const DAY_MS = 24 * 60 * 60 * 1000;
 

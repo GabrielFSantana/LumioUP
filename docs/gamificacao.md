@@ -23,6 +23,9 @@ Status: Etapas 10 (XP e níveis) e 11 (sequência, missões e conquistas).
 | Guardar para uma meta | 5 | 2 |
 | Concluir uma meta | 50 | uma vez por meta |
 | Concluir um desafio do clube | 40 | 2 |
+| Ler um artigo (marcar como lido) | 15 | 3, uma vez por artigo |
+| Passar no quiz de um artigo (2 de 3) | 20 | 3, uma vez por artigo |
+| Concluir a trilha (ler todos os artigos) | 50 | uma vez por trilha |
 
 As regras ficam no banco e podem ser ajustadas sem publicar um novo app. O app mostra essas regras na tela Jornada.
 Próximas fontes: conteúdos e questionários (Etapa 14), revisão semanal e missões (Etapa 11).
@@ -105,6 +108,20 @@ Regra `challenge_done`: 40 XP, no máximo 2 por dia, uma vez por desafio.
 - **Ranking** (`club_ranking`): XP da semana (desde domingo), do mês ou geral, mais sequência, missões e
   conquistas. Quem desligou "Aparecer no ranking dos clubes" não aparece para os outros, nem no ranking nem no
   placar do desafio; só vê a própria linha, sem posição. Nenhuma coluna monetária existe nessas tabelas.
+
+## Educação (Etapa 14)
+
+- **Conteúdo no banco** (`articles`, `glossary_terms`, `learning_tracks`, `quiz_questions`): só leitura para o app, em
+  português, neutro e sem recomendar produtos. Os números dos exemplos são ilustrativos. Vale revisão jurídica do
+  texto antes da publicação na loja, e o aviso educacional aparece na aba Aprender e em cada artigo.
+- **Gabarito escondido:** o app lê as perguntas e opções, mas não `correct_index` nem `explanation` (permissão por
+  coluna). A correção é a função `submit_quiz`, que devolve o gabarito só depois das respostas.
+- **XP uma vez por artigo/quiz/trilha**, com limite de 3 leituras e 3 quizzes por dia. Se o limite do dia já foi
+  usado, o artigo ainda fica como lido (só o XP daquele dia não é concedido). Ler ou passar no quiz conta como dia
+  organizado. Conquistas novas: "Primeira lição" (1 artigo) e "Estudioso" (5).
+- **Recomendação contextual** (`recommended_articles`): olha os últimos 30 dias no servidor (saídas acima das
+  entradas, várias assinaturas, primeiro aporte, gasto que cresceu 30% ou mais, nenhuma meta) e devolve só o artigo e
+  um motivo genérico, sem valores. Completa com o próximo passo da trilha. Vídeos ficaram de fora por não haver mídia.
 
 ## Nada disso é escrito pelo app
 

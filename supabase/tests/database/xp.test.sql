@@ -63,7 +63,7 @@ select throws_ok($$ update public.user_stats set total_xp = 99999 $$, '42501', n
 select throws_ok($$ select public.award_xp('aaaaaaaa-0000-0000-0000-000000000001', 'goal_completed', null, 'forjado') $$, '42501', null, 'usuário não chama a função de XP');
 select throws_ok($$ update public.xp_rules set xp = 9999 $$, '42501', null, 'usuário não altera as regras');
 select throws_ok($$ insert into public.levels (level, name, min_xp) values (9, 'Falso', 1) $$, '42501', null, 'usuário não altera os níveis');
-select is((select count(*)::int from public.xp_rules), 8, 'regras legíveis');
+select is((select count(*)::int from public.xp_rules), 11, 'regras legíveis');
 select is((select count(*)::int from public.levels), 8, 'oito níveis legíveis');
 
 -- Isolamento e independência do valor

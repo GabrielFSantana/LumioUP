@@ -73,7 +73,7 @@ select throws_ok($$ update public.user_stats set current_streak = 999 $$, '42501
 select throws_ok($$ update public.achievements set xp_reward = 200 $$, '42501', null, 'usuário não altera o catálogo de conquistas');
 select throws_ok($$ insert into public.mission_templates (code, period, title, description, metric, target, xp_reward)
   values ('x', 'daily', 'x', 'x', 'active_days', 1, 100) $$, '42501', null, 'usuário não cria missões');
-select is((select count(*)::int from public.achievements), 11, 'catálogo de conquistas legível');
+select is((select count(*)::int from public.achievements), 13, 'catálogo de conquistas legível');
 select is((select count(*)::int from public.mission_templates), 4, 'modelos de missão legíveis');
 
 -- Sequência quebrada (B): recomeça em 1, recorde mantido
