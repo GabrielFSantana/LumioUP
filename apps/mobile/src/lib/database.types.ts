@@ -549,14 +549,14 @@ isOneToOne: false
                   ]
                 },"user_settings": {
                   Row: {
-                    "biometric_lock": boolean,"created_at": string,"profile_id": string,"share_amounts_with_clubs": boolean,"show_in_club_ranking": boolean,"updated_at": string
+                    "biometric_lock": boolean,"created_at": string,"notif_daily_reminder": boolean,"notif_daily_time": string,"notif_goal_deadlines": boolean,"notif_missions": boolean,"notif_monthly_summary": boolean,"notif_weekly_review": boolean,"profile_id": string,"share_amounts_with_clubs": boolean,"show_in_club_ranking": boolean,"updated_at": string
                   }
                   ComputedFields: never
                   Insert: {
-                    "biometric_lock"?: boolean,"created_at"?: string,"profile_id": string,"share_amounts_with_clubs"?: boolean,"show_in_club_ranking"?: boolean,"updated_at"?: string
+                    "biometric_lock"?: boolean,"created_at"?: string,"notif_daily_reminder"?: boolean,"notif_daily_time"?: string,"notif_goal_deadlines"?: boolean,"notif_missions"?: boolean,"notif_monthly_summary"?: boolean,"notif_weekly_review"?: boolean,"profile_id": string,"share_amounts_with_clubs"?: boolean,"show_in_club_ranking"?: boolean,"updated_at"?: string
                   }
                   Update: {
-                    "biometric_lock"?: boolean,"created_at"?: string,"profile_id"?: string,"share_amounts_with_clubs"?: boolean,"show_in_club_ranking"?: boolean,"updated_at"?: string
+                    "biometric_lock"?: boolean,"created_at"?: string,"notif_daily_reminder"?: boolean,"notif_daily_time"?: string,"notif_goal_deadlines"?: boolean,"notif_missions"?: boolean,"notif_monthly_summary"?: boolean,"notif_weekly_review"?: boolean,"profile_id"?: string,"share_amounts_with_clubs"?: boolean,"show_in_club_ranking"?: boolean,"updated_at"?: string
                   }
                   Relationships: [
                     {

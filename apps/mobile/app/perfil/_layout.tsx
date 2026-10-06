@@ -19,6 +19,7 @@ export default function PerfilLayout() {
       <Stack.Screen name="categoria-form" options={{ title: 'Categoria' }} />
       <Stack.Screen name="contas" options={{ title: 'Contas' }} />
       <Stack.Screen name="conta-form" options={{ title: 'Conta' }} />
+      <Stack.Screen name="notificacoes" options={{ title: 'Notificações' }} />
     </Stack>
   );
 }

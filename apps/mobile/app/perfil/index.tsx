@@ -45,6 +45,13 @@ export default function PerfilScreen() {
         onPress={() => router.push('/perfil/contas')}
       />
 
+      <MenuRow
+        title="Notificações"
+        subtitle="Lembretes só quando você quiser"
+        leading={<CategoryBadge icon="notifications-outline" color="pink" />}
+        onPress={() => router.push('/perfil/notificacoes')}
+      />
+
       <Card>
         <Text variant="heading">Privacidade nos clubes</Text>
         <View style={{ flexDirection: 'row', alignItems: 'center', gap: 12 }}>

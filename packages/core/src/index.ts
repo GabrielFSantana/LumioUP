@@ -8,3 +8,4 @@ export * from './gamification/progress';
 export * from './clubs/clubs';
 export * from './challenges/challenges';
 export * from './education/education';
+export * from './notifications/notifications';

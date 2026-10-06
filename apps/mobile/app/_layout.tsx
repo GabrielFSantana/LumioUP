@@ -9,6 +9,7 @@ import { Text, ToastProvider } from '../src/components/ui';
 import { AuthProvider, useAuth } from '../src/features/auth/AuthProvider';
 import { LevelUpOverlay } from '../src/features/gamification/LevelUpOverlay';
 import { XpWatcher } from '../src/features/gamification/XpWatcher';
+import { NotificationSync } from '../src/features/notifications/NotificationSync';
 import { queryClient } from '../src/lib/queryClient';
 import { isSupabaseConfigured } from '../src/lib/supabase';
 import { fonts, useTheme } from '../src/theme';
@@ -68,6 +69,7 @@ function RootNavigator() {
       {session ? (
         <>
           <XpWatcher />
+          <NotificationSync />
           <LevelUpOverlay />
         </>
       ) : null}
