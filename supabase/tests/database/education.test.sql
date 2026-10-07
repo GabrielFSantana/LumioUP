@@ -78,11 +78,11 @@ select is((select article_slug from public.recommended_articles() limit 1), 'met
 reset role;
 -- B gasta mais do que recebe e registra várias assinaturas.
 insert into public.transactions (profile_id, kind, amount_cents, occurred_on, account_id, category_id)
-select 'bbbbbbbb-0000-0000-0000-000000000002', 'income', 10000, current_date,
+select 'bbbbbbbb-0000-0000-0000-000000000002', 'income', 10000, (now() at time zone 'America/Sao_Paulo')::date,
   (select id from public.accounts where profile_id = 'bbbbbbbb-0000-0000-0000-000000000002' limit 1),
   (select id from public.categories where profile_id = 'bbbbbbbb-0000-0000-0000-000000000002' and kind = 'income' limit 1);
 insert into public.transactions (profile_id, kind, amount_cents, occurred_on, account_id, category_id)
-select 'bbbbbbbb-0000-0000-0000-000000000002', 'expense', 7000 + g, current_date,
+select 'bbbbbbbb-0000-0000-0000-000000000002', 'expense', 7000 + g, (now() at time zone 'America/Sao_Paulo')::date,
   (select id from public.accounts where profile_id = 'bbbbbbbb-0000-0000-0000-000000000002' limit 1),
   (select id from public.categories where profile_id = 'bbbbbbbb-0000-0000-0000-000000000002' and name = 'Assinaturas' limit 1)
 from generate_series(1, 3) g;
