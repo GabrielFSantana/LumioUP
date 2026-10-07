@@ -55,6 +55,13 @@
     "runtimeVersion": {
       "policy": "appVersion"
     },
-    "description": "Organize suas finanças com leveza, constância e um pouco de jogo."
+    "description": "Organize suas finanças com leveza, constância e um pouco de jogo.",
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "f5be19b3-2586-473d-af02-5fdf75bf5d5e"
+      }
+    },
+    "owner": "biuu"
   }
 }
