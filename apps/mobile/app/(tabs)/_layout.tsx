@@ -1,7 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
-import { Tabs } from 'expo-router';
-import { Platform } from 'react-native';
-import { fonts, radius, spacing, useTheme } from '../../src/theme';
+import { Tabs } from 'expo-router/js-tabs';
+import { TabBar } from '../../src/components/ui/TabBar';
 
 type IconName = React.ComponentProps<typeof Ionicons>['name'];
 
@@ -14,29 +13,8 @@ const TABS: { name: string; title: string; label: string; icon: IconName }[] = [
 ];
 
 export default function TabsLayout() {
-  const { colors } = useTheme();
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: colors.text,
-        tabBarInactiveTintColor: colors.textMuted,
-        tabBarActiveBackgroundColor: colors.primarySoft,
-        tabBarLabelStyle: { fontFamily: fonts.bodyBold, fontSize: 11 },
-        tabBarItemStyle: {
-          borderRadius: radius.md,
-          marginVertical: spacing.xs,
-          marginHorizontal: 2,
-        },
-        tabBarStyle: {
-          backgroundColor: colors.surface,
-          borderTopColor: colors.border,
-          borderTopWidth: 2,
-          height: Platform.OS === 'web' ? 68 : undefined,
-          paddingHorizontal: spacing.xs,
-        },
-      }}
-    >
+    <Tabs tabBar={(props) => <TabBar {...props} />} screenOptions={{ headerShown: false }}>
       {TABS.map(({ name, title, label, icon }) => (
         <Tabs.Screen
           key={name}
