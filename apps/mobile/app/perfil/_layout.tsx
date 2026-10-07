@@ -21,6 +21,7 @@ export default function PerfilLayout() {
       <Stack.Screen name="conta-form" options={{ title: 'Conta' }} />
       <Stack.Screen name="notificacoes" options={{ title: 'Notificações' }} />
       <Stack.Screen name="privacidade" options={{ title: 'Privacidade e dados' }} />
+      <Stack.Screen name="sobre" options={{ title: 'Sobre o LumioUP' }} />
     </Stack>
   );
 }

@@ -1,3 +1,4 @@
+import { View } from 'react-native';
 import Svg, { Circle, Ellipse, Line, Path } from 'react-native-svg';
 import { useTheme } from '../../theme';
 
@@ -14,15 +15,8 @@ const INK = '#14213D';
 /** Lumi, o mascote. Rascunho vetorial: a arte final virá de ilustrador. */
 export function Mascot({ size = 64, mood = 'happy', label }: MascotProps) {
   const { isDark } = useTheme();
-  return (
-    <Svg
-      width={size}
-      height={size}
-      viewBox="0 0 120 120"
-      {...(label
-        ? { accessible: true, accessibilityLabel: label, accessibilityRole: 'image' as const }
-        : {})}
-    >
+  const svg = (
+    <Svg width={size} height={size} viewBox="0 0 120 120">
       <Circle cx={60} cy={64} r={54} fill="#FFE27A" opacity={isDark ? 0.18 : 0.55} />
       <Line x1={60} y1={30} x2={60} y2={14} stroke={INK} strokeWidth={5} strokeLinecap="round" />
       <Circle cx={60} cy={12} r={7} fill="#FFFFFF" stroke={INK} strokeWidth={4} />
@@ -51,5 +45,13 @@ export function Mascot({ size = 64, mood = 'happy', label }: MascotProps) {
       <Circle cx={37} cy={77} r={4.5} fill="#FF9A7A" opacity={0.8} />
       <Circle cx={83} cy={77} r={4.5} fill="#FF9A7A" opacity={0.8} />
     </Svg>
+  );
+  // O rótulo fica num contêiner: `accessible` direto no SVG vira atributo inválido no DOM (web).
+  return label ? (
+    <View accessible accessibilityRole="image" accessibilityLabel={label}>
+      {svg}
+    </View>
+  ) : (
+    svg
   );
 }

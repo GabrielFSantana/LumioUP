@@ -80,6 +80,13 @@ export default function PerfilScreen() {
         </Text>
       </Card>
 
+      <MenuRow
+        title="Sobre o LumioUP"
+        subtitle="Créditos e quem desenvolveu o app"
+        leading={<CategoryBadge icon="information-circle-outline" color="sand" />}
+        onPress={() => router.push('/perfil/sobre')}
+      />
+
       <Button label="Sair" variant="secondary" onPress={signOut} />
     </Screen>
   );
