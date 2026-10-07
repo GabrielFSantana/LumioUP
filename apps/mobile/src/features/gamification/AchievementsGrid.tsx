@@ -1,5 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
-import { describeXpGain, formatBrDate } from '@lumioup/core';
+import { describeXpGain, formatBrDate, toDateString } from '@lumioup/core';
 import { StyleSheet, View } from 'react-native';
 import { Text } from '../../components/ui';
 import { edge, spacing, useTheme } from '../../theme';
@@ -18,7 +18,7 @@ function Medal({ item }: { item: AchievementView }) {
       accessibilityLabel={
         item.unlocked
           ? `${item.name}. ${item.description} Desbloqueada em ${formatBrDate(
-              (item.unlockedAt ?? '').slice(0, 10),
+              toDateString(new Date(item.unlockedAt ?? Date.now())),
             )}.`
           : `${item.name}. Bloqueada. ${item.description} Vale ${describeXpGain(item.xpReward)}.`
       }

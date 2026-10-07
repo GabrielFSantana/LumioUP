@@ -113,7 +113,7 @@ export default function PrivacidadeScreen() {
           <View key={`${item.type}-${item.acceptedAt}`} style={{ gap: 2 }}>
             <Text variant="bodyBold">{consentLabel(item.type)}</Text>
             <Text variant="caption">
-              {`Versão ${item.version} · aceito em ${formatBrDate(item.acceptedAt.slice(0, 10))}`}
+              {`Versão ${item.version} · aceito em ${formatBrDate(toDateString(new Date(item.acceptedAt)))}`}
             </Text>
           </View>
         ))}
